@@ -1,0 +1,34 @@
+{% extends "ews/layout.html" %}
+
+{% block title %}
+{{entries.name}}
+{% endblock %}
+
+{% block body %}
+    <h1>{{entries.name}}</h1>
+
+    
+      
+    <h2>Predictor variables</h2>
+    {%for station in stations%}
+    <ul>
+        
+            <h5>{{station.name}}</h5> 
+        
+        <p>
+            Type of predictor variable: {{station.feature_type}} 
+            <button class= "btn-danger btn-sm">Delete</button>
+            <button class= "btn-primary btn-sm">Edit</button>
+        </p> 
+        
+    </ul>
+        {% empty %}
+        <h2>No predictors exist, yet. Create one and start modeling!</h2>
+        <a href="{% url add_station %}"></a>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'ews:add_station' %}">
+        <input type="submit" value="Add predictor" />
+    </form>
+
+{% endblock %}
