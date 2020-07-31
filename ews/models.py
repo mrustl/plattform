@@ -24,5 +24,5 @@ class Station(models.Model):
 class FeatureData(models.Model):
     date=models.DateTimeField()
     value= models.DecimalField(max_digits=6, decimal_places=2)
-    station=models.ForeignKey(Station, on_delete=models.CASCADE, related_name="data")
+    station=models.ForeignKey(Station, on_delete=models.CASCADE, related_name="station")
     
