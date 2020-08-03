@@ -59,31 +59,33 @@ def add_data(request):
         form = FeatureDataForm()
     return render(request, "ews/add_data.html", {"form":form})
 
-
+#def delete_station(request, station_id):
+#    Station.objects.filter(id=station_id).delete()
+ #   return render(request, )
 
 #@login_required
-#def simple_upload(request, bathingspot_id):
- #   if request.method == 'POST':
+def file_upload(request):
+    if request.method == 'POST':
 
-  #      rainfall_resource = RainfallResource()
-    #    dataset = Dataset()
-   #     new_rainfall = request.FILES['myfile']
+        rainfall_resource = RainfallResource()
+        dataset = Dataset()
+        new_rainfall = request.FILES['myfile']
 
 
-     #   imported_data = dataset.load(new_rainfall.read().decode("utf-8"), format="csv")
-        # create an array containing the location_id
-      #  location_arr = [bathingspot_id] * len(imported_data)
+        imported_data = dataset.load(new_rainfall.read().decode("utf-8"), format="csv")
+      #  create an array containing the location_id
+        location_arr = [bathingspot_id] * len(imported_data)
 
         # use the tablib API to add a new column, and insert the location array values
-       # imported_data.append_col(location_arr, header="bathingspot")
+        imported_data.append_col(location_arr, header="bathingspot")
 
-    #    try:
-     #       result = rainfall_resource.import_data(dataset, dry_run=True)  # Test the data import
-      #  except Exception as e:
-       #     return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            result = rainfall_resource.import_data(dataset, dry_run=True)  # Test the data import
+        except Exception as e:
+            return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 
-   #     if not result.has_errors():
-    #        rainfall_resource.import_data(dataset, dry_run=False)  # Actually import now
+        if not result.has_errors():
+            rainfall_resource.import_data(dataset, dry_run=False)  # Actually import now
 
     #    y_data =  np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('value', flat = True))
      #   x_data = np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('datetime', flat = True))
@@ -92,12 +94,12 @@ def add_data(request):
      #                       mode='lines+markers', name='test',
       #                      opacity=0.8, marker_color='rgba(0, 86, 110, 1)')],
        #                     output_type='div')
-   #     template = loader.get_template('berlin/view_import.html')
-    #    context = {
-     #       'plot_div': plot_div,
- #           'bathingspot_id': bathingspot_id
-#
-            #'img_url': img_url,
-  #      }
-   #     return HttpResponse(template.render(context, request))
-   # return render(request, 'berlin/import.html')
+        template = loader.get_template('berlin/view_import.html')
+        context = {
+            'plot_div': plot_div,
+            'bathingspot_id': bathingspot_id,
+
+            'img_url': img_url,
+        }
+        return HttpResponse(template.render(context, request))
+    return render(request, 'berlin/import.html')

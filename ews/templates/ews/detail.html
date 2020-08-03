@@ -18,13 +18,13 @@
         <p>
             Type of predictor variable: {{station.feature_type}} 
             <button class= "btn-danger btn-sm">Delete</button>
-            <button class= "btn-primary btn-sm">Edit</button>
+            <button class= "btn-primary btn-sm">Add data</button>
         </p> 
         
     </ul>
         {% empty %}
         <h2>No predictors exist, yet. Create one and start modeling!</h2>
-        <a href="{% url add_station %}"></a>
+        <a href="{% url 'ews:add_station' %}"></a>
         {% endfor %}
     </ul>
     <form action="{% url 'ews:add_station' %}">
