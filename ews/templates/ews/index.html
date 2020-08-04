@@ -1,17 +1,17 @@
-{% extends "ews/layout.html" %}
+{% extends "ews/base.html" %}
 
 {% block title %}
     
 {% endblock %}
 
 {% block body %}
-    <h1>Bathing spots (Overview)</h1>
+   
 
     <ul>
         {% for entry in entries %}
             <li> <a href= "{% url 'ews:detail' entry.id %}" > {{ entry.name }}</li>
         {% empty %}
-        <h2>No Bathing spot there, yet. Create one and start modeling!</h2>
+        <p>No Bathing spot there, yet. Create one and start modeling!</p>
         {% endfor %}
         
     </ul>
