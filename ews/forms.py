@@ -5,7 +5,7 @@ from django.forms import ModelForm
 class BathingSpotForm(ModelForm):
     class Meta:
         model = BathingSpot
-        fields=["name"]
+        fields=[ "name"]
 
 
 class StationForm(ModelForm):

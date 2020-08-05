@@ -5,27 +5,35 @@ from .models import BathingSpot, Station, FeatureType
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+@login_required
 def index(request):
-    entries = BathingSpot.objects.all()
-    return render(request, "ews/index.html", {"entries": entries})
+    entries = BathingSpot.objects.filter(user = request.user)
+    peter=request.user
+    return render(request, "ews/index.html", {"entries": entries, 'peter':peter})
 
-
+@login_required
 def create_spot(request):
+    peter=request.user
+    spot = BathingSpot()
     if request.method == "POST":
         form = BathingSpotForm(request.POST)
+        form.user = peter
         if form.is_valid():
-            form.save()
+            spot.name = form.cleaned_data["name"]
+            spot.user = peter
+            spot.save()
             name = form.cleaned_data["name"]
             id = BathingSpot.objects.filter(name =name).values()[0]["id"]
         return HttpResponseRedirect(reverse('ews:detail', args=[id]))
     else:
         form = BathingSpotForm()
-    return render(request, "ews/create.html", {"form":form})
+          
+    return render(request, "ews/create.html", {"form":form, 'peter':peter})
 
+@login_required
 def detail_view(request, spot_id):
     entries = BathingSpot.objects.get(id = spot_id)
     stations = entries.stations.values()
@@ -37,7 +45,7 @@ def detail_view(request, spot_id):
     return render(request, "ews/detail.html", {"entries": entries, "stations":stations})
 
 
-
+@login_required
 def add_station(request):
     if request.method == "POST":
         form = StationForm(request.POST)
@@ -48,7 +56,7 @@ def add_station(request):
         form = StationForm()
        
     return render(request, "ews/add_station.html", {"form":form})
-
+@login_required
 def add_data(request):
     if request.method == "POST":
         form = FeatureDataForm(request.POST)
@@ -64,6 +72,7 @@ def add_data(request):
  #   return render(request, )
 
 #@login_required
+@login_required
 def file_upload(request):
     if request.method == 'POST':
 

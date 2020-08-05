@@ -1,10 +1,12 @@
 {% extends "ews/base.html" %}
 
 {% block body %}
-    <h1>Create new spot</h1>
+    <h1>{{peter}}</h1>
+    
     <form method = "post", action="{% url 'ews:create'%}">
         {% csrf_token %}
-        {{form}}
+        {{form.name}}
+               
         <input type="submit" value="Submit">
     </form>
 {% endblock %}

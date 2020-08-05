@@ -6,10 +6,7 @@ body {
   font-size: 12px;
   padding: 0px;
 }
-.parent {
-   display: grid;
-   grid-template-rows: auto 1fr auto;
- }
+
 
 .page-content > .row {
   margin-left: 0px !important;
