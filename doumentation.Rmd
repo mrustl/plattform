@@ -1,0 +1,18 @@
+---
+title: "Documentation modeling process"
+author: "Wolfgang Seis"
+date: "5 8 2020"
+output: html_document
+---
+
+### Modelling process
+
+The DWC plattform implements a variety of machine learning (ML) algorithm for predicting bathing water quality. The type ML which is used is called **supervised learning**. In supervised learning paired data is used to estimate the parameters of a statistical model. The estimated parameters in turn can be used to make prediciton for the future. The final objective of such this exercise is to predict the so-called **target variable** by using one or more **predictor variable** or **features**.
+
+### Target variables for bathing water management
+
+In bathing water management, decisions are made based on the concentration of two types of bacteria, *Escherichia coli* and intestinale enterococci. Both types of bacteria live in the intestine of warm-blood animals. Therefore, the detection of these bacteria indicates a fecal contamination. Therefore, these bacteria are also called fecal indicator bateria, or short FIB.
+
+### The predictor variables for bathing water management
+
+

@@ -14,16 +14,19 @@
     <ul>
         
             <h5>{{station.name}}</h5> 
+            <h5>{{station.id}}</h5> 
         
         <p>
             Type of predictor variable: {{station.feature_type}} 
             <button class= "btn-danger btn-sm">Delete</button>
+            <form action="{% url 'ews:file_upload' station.id%}">
             <button class= "btn-primary btn-sm">Add data</button>
+            </form>
         </p> 
         
     </ul>
         {% empty %}
-        <h2>No predictors exist, yet. Create one and start modeling!</h2>
+        <h5>No predictors exist, yet. Create one and start modeling!</h5>
         <a href="{% url 'ews:add_station' %}"></a>
         {% endfor %}
     </ul>

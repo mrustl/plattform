@@ -56,6 +56,7 @@ def add_station(request):
         form = StationForm()
        
     return render(request, "ews/add_station.html", {"form":form})
+
 @login_required
 def add_data(request):
     if request.method == "POST":
@@ -73,28 +74,28 @@ def add_data(request):
 
 #@login_required
 @login_required
-def file_upload(request):
+def file_upload(request, station_id):
     if request.method == 'POST':
 
-        rainfall_resource = RainfallResource()
+        feature_resource = FeatureDataResource()
         dataset = Dataset()
-        new_rainfall = request.FILES['myfile']
+        new_data = request.FILES['myfile']
 
 
-        imported_data = dataset.load(new_rainfall.read().decode("utf-8"), format="csv")
+        imported_data = dataset.load(new_data.read().decode("utf-8"), format="csv")
       #  create an array containing the location_id
-        location_arr = [bathingspot_id] * len(imported_data)
+        location_arr = [station_id] * len(imported_data)
 
         # use the tablib API to add a new column, and insert the location array values
-        imported_data.append_col(location_arr, header="bathingspot")
+        imported_data.append_col(location_arr, header="station")
 
         try:
-            result = rainfall_resource.import_data(dataset, dry_run=True)  # Test the data import
+            result = feature_resource.import_data(dataset, dry_run=True)  # Test the data import
         except Exception as e:
             return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 
         if not result.has_errors():
-            rainfall_resource.import_data(dataset, dry_run=False)  # Actually import now
+            feature_resource.import_data(dataset, dry_run=False)  # Actually import now
 
     #    y_data =  np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('value', flat = True))
      #   x_data = np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('datetime', flat = True))
@@ -103,12 +104,12 @@ def file_upload(request):
      #                       mode='lines+markers', name='test',
       #                      opacity=0.8, marker_color='rgba(0, 86, 110, 1)')],
        #                     output_type='div')
-        template = loader.get_template('berlin/view_import.html')
-        context = {
-            'plot_div': plot_div,
-            'bathingspot_id': bathingspot_id,
+     #   template = loader.get_template('berlin/view_import.html')
+      #  context = {
+       #     'plot_div': plot_div,
+        #    'bathingspot_id': bathingspot_id,
 
-            'img_url': img_url,
-        }
-        return HttpResponse(template.render(context, request))
-    return render(request, 'berlin/import.html')
+        #    'img_url': img_url,
+        #}
+        return render(request, "ews/success.html", {'imported_data': imported_data})
+    return render(request, 'ews/import.html', {"station_id":station_id})

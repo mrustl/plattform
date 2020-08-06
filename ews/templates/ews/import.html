@@ -1,0 +1,14 @@
+{% extends "ews/base.html" %}
+
+{% block body %}
+<h4>Here you can upload a csv file containing multiple data</h4>
+
+  <form method="post" enctype="multipart/form-data" action = "{%url 'ews:file_upload' station_id%}">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
+
+
+{% endblock %}
+  
