@@ -7,7 +7,7 @@ from crispy_forms.layout import Layout, Field, ButtonHolder, Submit
 class BathingSpotForm(forms.ModelForm):
     class Meta:
         model = BathingSpot
-        fields=[ "name"]
+        fields=[ "name", "description"]
 
 
 class StationForm(forms.ModelForm):

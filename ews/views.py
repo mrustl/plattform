@@ -10,14 +10,35 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 @login_required
-def index(request):
+def bathingspots(request):
     entries = BathingSpot.objects.filter(user = request.user)
-    peter=request.user
-    return render(request, "ews/index.html", {"entries": entries, 'peter':peter})
+    return render(request, "ews/index.html", {"entries": entries})
+
+
+def stations(request):
+    stations = Station.objects.filter(owner = request.user)
+    return render(request, "ews/index.html", {"entries": stations})
+
+def mlmodels(request):
+    mlmodels = PredictionModel.objects.filter(user = request.user)
+    return render(request, "ews/index.html", {"entries": mlmodels})
+
 
 def model_config(request):
     if request.method == "POST":
-        return HttpResponseRedirect(reverse("ews:index"))
+        form = PredictionModelForm(request.user, request.POST)
+        if form.is_valid():
+            pmodel = PredictionModel()
+            pmodel.user = request.user
+            pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
+            pmodel.save()
+            pmodel.station.set(form.cleaned_data["station"])
+            pmodel.save()
+            return HttpResponseRedirect(reverse("ews:mlmodels"))
+        else:
+            return HttpResponse(request, "Form not valid")
+
+        return HttpResponseRedirect(reverse("ews:mlmodels"))
     else:
         pmodel_form = PredictionModelForm(request.user)
         return render(request, "ews/model_config.html", {"pmodel_form": pmodel_form})
@@ -27,23 +48,23 @@ def model_config(request):
 
 
 @login_required
-def create_spot(request):
-    peter=request.user
-    spot = BathingSpot()
+def spot_create(request):
     if request.method == "POST":
         form = BathingSpotForm(request.POST)
-        form.user = peter
+        user = request.user
         if form.is_valid():
+            spot = BathingSpot()
             spot.name = form.cleaned_data["name"]
-            spot.user = peter
+            spot.description = form.cleaned_data["description"]
+            spot.user = user
             spot.save()
-            name = form.cleaned_data["name"]
-            id = BathingSpot.objects.filter(name =name).values()[0]["id"]
-        return HttpResponseRedirect(reverse('ews:detail', args=[id]))
+        return HttpResponseRedirect(reverse('ews:bathing_spots'))
     else:
-        form = BathingSpotForm()
-          
-    return render(request, "ews/create.html", {"form":form, 'peter':peter})
+        form = BathingSpotForm()          
+    return render(request, "ews/create.html", {"form":form})
+
+
+
 
 @login_required
 def detail_view(request, spot_id):

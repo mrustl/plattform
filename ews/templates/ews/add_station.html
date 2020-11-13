@@ -1,13 +1,23 @@
 {% extends "ews/base.html" %}
-
+{% load crispy_forms_tags %}
 {% block body %}
-    <h1>Create new station</h1>
+    <div class="container" style="padding: 5%">
+
+  <div class="row">
+    <div class="col-sm-8">
+    <h4>Create new predictor variable</h4>
     <form method = "post", action="{% url 'ews:add_station'%}">
         {% csrf_token %}
-        {{form.name}}
-        {{form.feature_type}}
-        {{form.bathing_spot}}
+        {{form.name|as_crispy_field}}
+        {{form.feature_type|as_crispy_field}}
+        {{form.bathing_spot|as_crispy_field}}
         <input type="submit" value="Submit">
     </form>
-    {{spot}}
+    </div>
+    <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
+     <h4 class= "mb-3">Options</h4>
+        <a class = "btn btn-primary mt-3 btn-block" href=""> Create new bathing spot</a>
+        <button class = "btn btn-primary mt-3 btn-block"> Configure prediction model </button>
+
+    </div>
 {% endblock %}

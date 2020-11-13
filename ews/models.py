@@ -32,4 +32,4 @@ class FeatureData(models.Model):
 class PredictionModel(models.Model):
     user = models.ForeignKey(User, on_delete= models.CASCADE, related_name = "models")
     bathing_spot = models.ForeignKey(BathingSpot, on_delete=models.CASCADE, related_name="models")
-    station = models.ManyToManyField(Station, related_name = "models")
+    station = models.ManyToManyField(Station, related_name = "models", null = True, blank = True)
