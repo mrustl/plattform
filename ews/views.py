@@ -19,7 +19,7 @@ def model_config(request):
     if request.method == "POST":
         return HttpResponseRedirect(reverse("ews:index"))
     else:
-        pmodel_form = PredictionModelForm
+        pmodel_form = PredictionModelForm(request.user)
         return render(request, "ews/model_config.html", {"pmodel_form": pmodel_form})
 
 

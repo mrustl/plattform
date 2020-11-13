@@ -26,12 +26,13 @@ SECRET_KEY = 'ik4%y-l@z=&%j9(olx&u=vdna4%m*5-82m9dqnn45r5ihk1-ii'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 # Application definition
 
 INSTALLED_APPS = [
     'ews',
+    'crispy_forms',
     'django.contrib.admin',
     'import_export',
     'django.contrib.auth',
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
+    
 ]
 
 MIDDLEWARE = [

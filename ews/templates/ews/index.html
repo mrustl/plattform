@@ -12,7 +12,18 @@
    
     <ul>
         {% for entry in entries %}
-            <li> <a href= "{% url 'ews:detail' entry.id %}" > {{ entry.name }}</a></li>
+     <div class="media px-3 mt-3">
+              <div class="media-left pr-3">
+             <a href= "{% url 'ews:detail' entry.id %}" > 
+              <img class= "img-fluid" src="/static/ews/img/placeholder_dwc.png" alt="...">
+            </a>
+        </div>
+        <div class="media-body">
+                  <h4 class="media-heading">{{entry.name|title}}</h4>
+                   <p> {{entry.description|capfirst}} 
+                   <a href= "{% url 'ews:detail' entry.id %}", class = "btn-sm btn-primary sm"> Details </a>
+                </div>
+        </div>
         {% empty %}
         <p>No Bathing spot there, yet. Create one and start modeling!</p>
         {% endfor %}
@@ -22,8 +33,13 @@
 
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
-        <a class = "btn btn-primary mt-3" href=""> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
+        <a class = "btn btn-primary mt-3 btn-block" href=""> Create new bathing spot</a>
+        <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
 
     </div>
 {% endblock %}
+
+
+
+
+            
