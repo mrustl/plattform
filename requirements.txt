@@ -1,3 +1,4 @@
 django
 tablib
 django-import-export
+django-crispy-forms

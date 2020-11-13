@@ -1,4 +1,6 @@
 {% extends "ews/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}
     
@@ -9,21 +11,17 @@
 
   <div class="row">
     <div class="col-sm-8">
-   
-    <ul>
-        {% for entry in entries %}
-            <li> <a href= "{% url 'ews:detail' entry.id %}" > {{ entry.name }}</a></li>
-        {% empty %}
-        <p>No Bathing spot there, yet. Create one and start modeling!</p>
-        {% endfor %}
-        
-    </ul>
+    <form action = "{%url "ews:model_config"%}", method = "post">
+        {% csrf_token %}
+        {{pmodel_form|crispy}}
+        <button class = "btn btn-primary" type = "submit">Submit</button>
+    </form>        
     </div>
 
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3" href=""> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
+        <button class = "btn btn-primary mt-3"> Configure prediction model </button>
 
     </div>
 {% endblock %}

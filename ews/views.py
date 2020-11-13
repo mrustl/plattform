@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import BathingSpotForm, StationForm, FeatureDataForm
-from .models import BathingSpot, Station, FeatureType, User
+from .forms import BathingSpotForm, StationForm, FeatureDataForm, PredictionModelForm
+from .models import BathingSpot, Station, FeatureType, User, PredictionModel
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
@@ -14,6 +14,17 @@ def index(request):
     entries = BathingSpot.objects.filter(user = request.user)
     peter=request.user
     return render(request, "ews/index.html", {"entries": entries, 'peter':peter})
+
+def model_config(request):
+    if request.method == "POST":
+        return HttpResponseRedirect(reverse("ews:index"))
+    else:
+        pmodel_form = PredictionModelForm
+        return render(request, "ews/model_config.html", {"pmodel_form": pmodel_form})
+
+
+
+
 
 @login_required
 def create_spot(request):
@@ -127,6 +138,11 @@ def file_upload(request, station_id):
         #}
         return render(request, "ews/success.html", {'imported_data': imported_data})
     return render(request, 'ews/import.html', {"station_id":station_id})
+
+
+
+
+
 
 
 
