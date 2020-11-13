@@ -4,8 +4,10 @@
     <h1>Create new station</h1>
     <form method = "post", action="{% url 'ews:add_station'%}">
         {% csrf_token %}
-        {{form}}
+        {{form.name}}
+        {{form.feature_type}}
+        {{form.bathing_spot}}
         <input type="submit" value="Submit">
     </form>
-  
+    {{spot}}
 {% endblock %}

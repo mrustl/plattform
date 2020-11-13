@@ -1,7 +1,8 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import BathingSpotForm, StationForm, FeatureDataForm
-from .models import BathingSpot, Station, FeatureType
+from .models import BathingSpot, Station, FeatureType, User
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
@@ -47,15 +48,27 @@ def detail_view(request, spot_id):
 
 @login_required
 def add_station(request):
+    new_station = Station()
     if request.method == "POST":
         form = StationForm(request.POST)
+       # form.owner=request.user
         if form.is_valid():
-            form.save()
+            
+            new_station.name=form.cleaned_data["name"]
+            new_station.feature_type=form.cleaned_data["feature_type"]
+            
+            new_station.owner=request.user
+            new_station.save()
+            new_station.bathing_spot.set(form.cleaned_data["bathing_spot"])
+            new_station.save()
+
         return HttpResponseRedirect(reverse('ews:index'))
     else:
+        # prepopulating with dictionary
         form = StationForm()
-       
-    return render(request, "ews/add_station.html", {"form":form})
+        user_id = User.objects.filter(username=request.user).values()[0]["id"]
+        spot= BathingSpot.objects.filter(user = user_id) 
+    return render(request, "ews/add_station.html", {"form":form, "spot":spot})
 
 @login_required
 def add_data(request):
@@ -66,6 +79,7 @@ def add_data(request):
         return HttpResponseRedirect(reverse('ews:add_station'))
     else:
         form = FeatureDataForm()
+        
     return render(request, "ews/add_data.html", {"form":form})
 
 #def delete_station(request, station_id):
@@ -113,3 +127,31 @@ def file_upload(request, station_id):
         #}
         return render(request, "ews/success.html", {'imported_data': imported_data})
     return render(request, 'ews/import.html', {"station_id":station_id})
+
+
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "registration/register.html", {
+                "message": "Passwords must match."
+            })
+
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "registration/register.html", {
+                "message": "Username already taken."
+            })
+        login(request, user)
+        return HttpResponseRedirect(reverse("ews:index"))
+    else:
+        return render(request, "registration/register.html")

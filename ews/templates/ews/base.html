@@ -1,140 +1,80 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Bootstrap Admin Theme v3</title>
-     <!-- Bootstrap -->
-     <link href= "{%static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-     <!-- styles -->
-     <link href="{%static 'css/styles.css' %}" rel="stylesheet">
- 
-     <link href="{%static 'css/stats.css' %}" rel="stylesheet">
+<html lang="en">
+    <head>
+           <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="parent">
-       	<div class="header">
-	     <div class="container">
-	        <div class="row">
-	           <div class="col-md-5">
-	              <!-- Logo -->
-	              <div class="logo">
-	                 <h1><a href="index.html">Bootstrap Admin Theme</a></h1>
-	              </div>
-	           </div>
-	           <div class="col-md-5">
-	              <div class="row">
-	                <div class="col-lg-12">
-	                  <div class="input-group form">
-	                       <input type="text" class="form-control" placeholder="Search...">
-	                       <span class="input-group-btn">
-	                         <button class="btn btn-primary" type="button">Search</button>
-	                       </span>
-	                  </div>
-	                </div>
-	              </div>
-	           </div>
-	           <div class="col-md-2">
-	              <div class="navbar navbar-inverse" role="banner">
-	                  <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
-	                    <ul class="nav navbar-nav">
-	                      <li class="dropdown">
-	                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
-                            {% else %}
-                            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-                            {% endif %} 
-                            </ul>
-                                                  
-                            
-                          </li>
-	                    </ul>
-	                  </nav>
-	              </div>
-	           </div>
-	        </div>
-	     </div>
-	</div>
+        <title>{% block title %} QMRA calculator {% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+       
+        <link rel="stylesheet" href= "/static/ews/css/styles.css" >
+    
+    {% block script%}
+     {%endblock%}
+    </head>
+    <body>
 
-    <div class="page-content">
-    	<div class="row">
-		  <div class="col-md-2">
-		  	<div class="sidebar content-box" style="display: block;">
-                <ul class="nav">
-                    <!-- Main menu -->
-                    <li><a href="{% url 'ews:index' %}"><i class="glyphicon glyphicon-stats"></i> Home</a></li>
-                    <li><a href="{% url 'ews:create' %}"> <i class="glyphicon glyphicon-list"></i> Create New Bathing Spot</a></li>
-                    <li><a href="{% url 'ews:add_station' %}"><i class="glyphicon glyphicon-record"></i> Add station</a></li>
-                    <li><a href="{% url 'ews:add_data' %}"><i class="glyphicon glyphicon-pencil"></i> Add data</a></li>
-                    <li class="submenu">
-                         <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> Pages
-                            <span class="caret pull-right"></span>
-                         </a>
-                         <!-- Sub menu -->
-                         <ul>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="signup.html">Signup</a></li>
-                        </ul>
-                    </li>
-                </ul>
-             </div>
-		  </div>
-		  <div class="col-md-10">
-		  	<div class="row">
-		  		
-		  			
-		  				<div class="col-md-12">
-		  					<div class="content-box-header">
-			  					<div class="panel-title">Bathing spots (Overview)</div>
-								
-								<div class="panel-options">
-									<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
-									<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
-								</div>
-				  			</div>
-				  			<div class="content-box-large box-with-header">
-                                {% block body %}
-                                {% endblock %}
-                            
-								<br /><br />
-							</div>
-		  				</div>
-		  			</div>
-		  		</div>
-		  	</div>
+     
+        
+<nav class="navbar navbar-expand-lg navbar-light border-bottom" style="background-color: white;">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">
+      <img class= "img-fluid" src="{% static "ews/img/DWC-RVB-COLOR.svg" %}" width="80" height="40" alt="...">
+  </a>
+  {% if user.is_authenticated %}
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Bathing Spots <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Predictors</a>
+      </li>
+      
+    </ul>
 
 
-		
-		  </div>
-		</div>
-    </div>
+{% else %}
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link text_link_kwb" href="#">Login <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link text_link_kwb" href="#">Register</a>
+      </li>
+      
+    </ul>
+ {% endif %}
+  </div>
+</nav>
 
-    <footer>
-         <div class="container">
-         
-            <div class="copy text-center">
-               Copyright 2014 <a href='#'>Website</a>
-            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="body">
+            {% block body %}
+            {% endblock %}
             
-         </div>
-      </footer>
-      </div>
-    </div>
-</div>
-
-
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/custom.js"></script>
-  </body>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      
+    </body>
 </html>

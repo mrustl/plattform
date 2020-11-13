@@ -17,6 +17,7 @@ class FeatureType(models.Model):
 
 class Station(models.Model):
     name=models.CharField(max_length=64)
+    owner=models.ForeignKey(User, on_delete=models.PROTECT, related_name="owner")
     feature_type=models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name="feature_type")
     bathing_spot=models.ManyToManyField(BathingSpot, blank = True, related_name="stations")
     def __str__(self):

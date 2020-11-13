@@ -5,6 +5,7 @@ from . import views
 app_name = "ews"
 urlpatterns=[
 path("", views.index, name="index"),
+path("register", views.register, name="register"),
 path("create_spot", views.create_spot, name="create"),
 path("detail/<int:spot_id>", views.detail_view, name = "detail"),
 path("add_station", views.add_station, name="add_station"),

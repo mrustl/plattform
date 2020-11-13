@@ -16,8 +16,23 @@ class featuredataAdmin(ImportExportModelAdmin):
 
     pass
 
+#@admin.register(Bathing)
+class BathingSpotAdmin(admin.ModelAdmin):
+    list_display=("id", "name", "user")
 
-admin.site.register(BathingSpot)
-admin.site.register(Station)
+    pass
+
+class FeatureTypeAdmin(admin.ModelAdmin):
+    list_display=("id", "name", "unit")
+
+    pass
+
+class StationAdmin(admin.ModelAdmin):
+    list_display=("id", "name", "owner", "feature_type")
+
+    pass
+
+admin.site.register(BathingSpot,BathingSpotAdmin)
+admin.site.register(Station, StationAdmin)
 #admin.site.register(FeatureData, FeatureDataAdmin)
-admin.site.register(FeatureType)
+admin.site.register(FeatureType, FeatureTypeAdmin)
