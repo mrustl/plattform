@@ -7,17 +7,23 @@ from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
 from django.contrib.auth.decorators import login_required
+import numpy as np
+import pandas as  pd
+import plotly.express as px
+from plotly.offline import plot
+from django_pandas.io import read_frame
 # Create your views here.
 
 @login_required
 def bathingspots(request):
     entries = BathingSpot.objects.filter(user = request.user)
+
     return render(request, "ews/index.html", {"entries": entries})
 
 
 def stations(request):
     stations = Station.objects.filter(owner = request.user)
-    return render(request, "ews/index.html", {"entries": stations})
+    return render(request, "ews/index.html", {"entries": stations,"item": "spot"})
 
 def mlmodels(request):
     mlmodels = PredictionModel.objects.filter(user = request.user)
@@ -129,7 +135,7 @@ def file_upload(request, station_id):
 
 
         imported_data = dataset.load(new_data.read().decode("utf-8"), format="csv")
-      #  create an array containing the location_id
+        #create an array containing the location_id
         location_arr = [station_id] * len(imported_data)
 
         # use the tablib API to add a new column, and insert the location array values
@@ -142,21 +148,8 @@ def file_upload(request, station_id):
 
         if not result.has_errors():
             feature_resource.import_data(dataset, dry_run=False)  # Actually import now
-
-    #    y_data =  np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('value', flat = True))
-     #   x_data = np.array(Rainfall.objects.filter(bathingspot=bathingspot_id).values_list('datetime', flat = True))
-
-    #    plot_div = plot([go.Scatter(x=x_data, y=y_data,
-     #                       mode='lines+markers', name='test',
-      #                      opacity=0.8, marker_color='rgba(0, 86, 110, 1)')],
-       #                     output_type='div')
-     #   template = loader.get_template('berlin/view_import.html')
-      #  context = {
-       #     'plot_div': plot_div,
-        #    'bathingspot_id': bathingspot_id,
-
-        #    'img_url': img_url,
-        #}
+        
+        plot = px.histogram(imported_data)
         return render(request, "ews/success.html", {'imported_data': imported_data})
     return render(request, 'ews/import.html', {"station_id":station_id})
 

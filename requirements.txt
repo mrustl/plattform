@@ -2,3 +2,7 @@ django
 tablib
 django-import-export
 django-crispy-forms
+plotly
+pandas
+django-pandas
+numpy

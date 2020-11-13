@@ -21,6 +21,7 @@
         <div class="media-body">
                   <h4 class="media-heading">{{entry.name|title}}</h4>
                    <p> {{entry.description|capfirst}} 
+                   
                    <a href= "{% url 'ews:detail' entry.id %}", class = "btn-sm btn-primary sm"> Details </a>
                 </div>
         </div>

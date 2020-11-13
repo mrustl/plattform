@@ -16,7 +16,6 @@ path("register", views.register, name="register"),
 path("spot_create", views.spot_create, name="spot_create"),
 path("model_config", views.model_config, name="model_config"),
 path("add_station", views.add_station, name="add_station"),
-path("add_data", views.add_data, name="add_data"),
 
 # ??
 path("detail/<int:spot_id>", views.detail_view, name = "detail"),
