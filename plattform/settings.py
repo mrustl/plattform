@@ -26,8 +26,6 @@ SECRET_KEY = 'ik4%y-l@z=&%j9(olx&u=vdna4%m*5-82m9dqnn45r5ihk1-ii'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-CRISPY_TEMPLATE_PACK = 'bootstrap'
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -83,6 +81,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+#Crispy forms
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 # Password validation

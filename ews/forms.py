@@ -8,6 +8,7 @@ class BathingSpotForm(forms.ModelForm):
     class Meta:
         model = BathingSpot
         fields=[ "name", "description"]
+        widgets={"description": forms.Textarea(attrs={'rows':4})}
 
 
 class StationForm(forms.ModelForm):
@@ -24,7 +25,7 @@ class FeatureDataForm(forms.ModelForm):
 class PredictionModelForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(PredictionModelForm, self).__init__(*args, **kwargs)
-        self.fields['station'].help_text = "Please select the oredictor variable which you want to use to model calibration"
+        self.fields['station'].help_text = "Please select the predictor variable which you want to use to model calibration"
         self.fields['station'].empty_label = None
         self.fields['bathing_spot'].empty_label = None
         self.fields['bathing_spot'].help_text = "Please select the bathing water for which you want to create a prediction model"
