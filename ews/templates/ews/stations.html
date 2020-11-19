@@ -14,19 +14,19 @@
         {% for entry in entries %}
      <div class="media px-3 mt-3">
               <div class="media-left pr-3">
-             <a href= "{% url 'ews:detail' entry.id %}" > 
+            
               <img class= "img-fluid" src="/static/ews/img/placeholder_dwc.png" alt="...">
             </a>
         </div>
         <div class="media-body">
                   <h4 class="media-heading">{{entry.name|title}}</h4>
                    <p> {{entry.description|capfirst}} 
-                   <a href= "{% url 'ews:detail' entry.id %}", class = "btn-sm btn-primary sm"> Edit </a>
-                   <a href= "{% url 'ews:detail' entry.id %}", class = "btn-sm btn-danger sm"> Delete </a>
+                   
+                   <a href= "{% url 'ews:file_upload' entry.id  %}", class = "btn-sm btn-primary sm"> Add data </a>
                 </div>
         </div>
         {% empty %}
-        <p>No Bathing spot there, yet. Create one and start modeling!</p>
+        <p>No predictor variable exist, yet. Create one and start modelling!</p>
         {% endfor %}
         
     </ul>

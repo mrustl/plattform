@@ -35,5 +35,5 @@ class PredictionModelForm(forms.ModelForm):
         self.helper = FormHelper()
     class Meta:
         model =  PredictionModel
-        fields=["bathing_spot", "station"]
+        fields=["bathing_spot", "station", "name"]
         widgets={"station": forms.CheckboxSelectMultiple()}

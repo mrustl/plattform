@@ -23,7 +23,8 @@ def bathingspots(request):
 
 def stations(request):
     stations = Station.objects.filter(owner = request.user)
-    return render(request, "ews/index.html", {"entries": stations,"item": "spot"})
+    return render(request, "ews/stations.html", {"entries": stations,"item": "spot"})
+
 
 def mlmodels(request):
     mlmodels = PredictionModel.objects.filter(user = request.user)
@@ -185,3 +186,29 @@ def register(request):
         return HttpResponseRedirect(reverse("ews:index"))
     else:
         return render(request, "registration/register.html")
+
+
+# Registration and user management
+def login_view(request):
+    if request.method == "POST":
+
+        # Attempt to sign user in
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        # Check if authentication successful
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "registration/login.html", {
+                "message": "Invalid username and/or password."
+            })
+    else:
+        return render(request, "registration/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))

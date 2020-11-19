@@ -30,6 +30,7 @@ class FeatureData(models.Model):
     station=models.ForeignKey(Station, on_delete=models.CASCADE, related_name="station")
     
 class PredictionModel(models.Model):
+    name=models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete= models.CASCADE, related_name = "models")
     bathing_spot = models.ForeignKey(BathingSpot, on_delete=models.CASCADE, related_name="models")
     station = models.ManyToManyField(Station, related_name = "models", null = True, blank = True)

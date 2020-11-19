@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ews.models import BathingSpot, Station, FeatureData, FeatureType
+from ews.models import BathingSpot, Station, FeatureData, FeatureType, PredictionModel
 from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
@@ -34,5 +34,5 @@ class StationAdmin(admin.ModelAdmin):
 
 admin.site.register(BathingSpot,BathingSpotAdmin)
 admin.site.register(Station, StationAdmin)
-#admin.site.register(FeatureData, FeatureDataAdmin)
+admin.site.register(PredictionModel)
 admin.site.register(FeatureType, FeatureTypeAdmin)
