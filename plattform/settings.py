@@ -70,8 +70,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'plattform.wsgi.application'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
 
+#AUTH_USER_MODEL = 'ews.User'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 

@@ -20,17 +20,17 @@ def bathingspots(request):
 
     return render(request, "ews/index.html", {"entries": entries})
 
-
+@login_required
 def stations(request):
     stations = Station.objects.filter(owner = request.user)
     return render(request, "ews/stations.html", {"entries": stations,"item": "spot"})
 
-
+@login_required(login_url="login")
 def mlmodels(request):
     mlmodels = PredictionModel.objects.filter(user = request.user)
     return render(request, "ews/index.html", {"entries": mlmodels})
 
-
+@login_required
 def model_config(request):
     if request.method == "POST":
         form = PredictionModelForm(request.user, request.POST)
@@ -170,7 +170,7 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "registration/register.html", {
+            return render(request, "ews/register.html", {
                 "message": "Passwords must match."
             })
 
@@ -179,13 +179,13 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(request, "registration/register.html", {
+            return render(request, "ews/register.html", {
                 "message": "Username already taken."
             })
         login(request, user)
         return HttpResponseRedirect(reverse("ews:index"))
     else:
-        return render(request, "registration/register.html")
+        return render(request, "ews/register.html")
 
 
 # Registration and user management
@@ -200,15 +200,15 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("ews:index"))
         else:
-            return render(request, "registration/login.html", {
+            return render(request, "ews/login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "registration/login.html")
+        return render(request, "ews/login.html")
 
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("login"))
+    return HttpResponseRedirect(reverse("ews:login"))
