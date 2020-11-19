@@ -2,13 +2,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import BathingSpotForm, StationForm, FeatureDataForm, PredictionModelForm
-from .models import BathingSpot, Station, FeatureType, User, PredictionModel
+from .models import BathingSpot, Station, FeatureData, FeatureType, User, PredictionModel
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
 from django.contrib.auth.decorators import login_required
 import numpy as np
 import pandas as  pd
+from django.db import IntegrityError
 import plotly.express as px
 from plotly.offline import plot
 from django_pandas.io import read_frame
@@ -28,7 +29,7 @@ def stations(request):
 @login_required(login_url="login")
 def mlmodels(request):
     mlmodels = PredictionModel.objects.filter(user = request.user)
-    return render(request, "ews/index.html", {"entries": mlmodels})
+    return render(request, "ews/models.html", {"entries": mlmodels})
 
 @login_required
 def model_config(request):
@@ -37,6 +38,7 @@ def model_config(request):
         if form.is_valid():
             pmodel = PredictionModel()
             pmodel.user = request.user
+            pmodel.name = form.cleaned_data["name"]
             pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
             pmodel.save()
             pmodel.station.set(form.cleaned_data["station"])
@@ -109,6 +111,17 @@ def add_station(request):
         spot= BathingSpot.objects.filter(user = user_id) 
     return render(request, "ews/add_station.html", {"form":form, "spot":spot})
 
+def delete_station(request, station_id):
+    Station.objects.get(id=station_id).delete()
+    return HttpResponseRedirect(reverse('ews:stations'))
+
+def delete_model(request, model_id):
+    PredictionModel.objects.get(id=model_id).delete()
+    return HttpResponseRedirect(reverse('ews:mlmodels'))
+
+
+
+
 @login_required
 def add_data(request):
     if request.method == "POST":
@@ -150,12 +163,17 @@ def file_upload(request, station_id):
         if not result.has_errors():
             feature_resource.import_data(dataset, dry_run=False)  # Actually import now
         
-        plot = px.histogram(imported_data)
-        return render(request, "ews/success.html", {'imported_data': imported_data})
+        return render(HttpResponseRedirect(reverse("ews:station_detail")))
     return render(request, 'ews/import.html', {"station_id":station_id})
 
 
 
+def station_detail(request, station_id):
+        df = read_frame(FeatureData.objects.filter(station_id=station_id))
+        fig = px.bar(df, "date", "value")
+        fig = plot(fig, output_type = "div")
+        return render(request, "ews/station_detail.html", {"fig":fig})
+    
 
 
 
@@ -183,32 +201,7 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("ews:index"))
+        return HttpResponseRedirect(reverse("ews:mlmodels"))
     else:
         return render(request, "ews/register.html")
 
-
-# Registration and user management
-def login_view(request):
-    if request.method == "POST":
-
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("ews:index"))
-        else:
-            return render(request, "ews/login.html", {
-                "message": "Invalid username and/or password."
-            })
-    else:
-        return render(request, "ews/login.html")
-
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("ews:login"))
