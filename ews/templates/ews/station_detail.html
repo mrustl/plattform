@@ -10,8 +10,17 @@
               {% autoescape off %}
               {{ fig }}
               {% endautoescape %}
-              </div>
+
 </div>
+<div class="table-responsive table-body">
+    <div class="table table-hover" style = "width:100%;">
+      {{data|safe}}
+    </div>
+</div>
+</div>
+
+
+
 
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>

@@ -172,7 +172,7 @@ def station_detail(request, station_id):
         df = read_frame(FeatureData.objects.filter(station_id=station_id))
         fig = px.bar(df, "date", "value")
         fig = plot(fig, output_type = "div")
-        return render(request, "ews/station_detail.html", {"fig":fig})
+        return render(request, "ews/station_detail.html", {"fig":fig, "data":df.to_html()})
     
 
 
