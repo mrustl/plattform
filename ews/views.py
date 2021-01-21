@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import BathingSpotForm, StationForm, FeatureDataForm, PredictionModelForm
+from .forms import BathingSpotForm, StationForm, FeatureDataForm, PredictionModelForm, PredictionModelForm2
 from .models import BathingSpot, Station, FeatureData, FeatureType, User, PredictionModel
 from django.urls import reverse
 from tablib import Dataset, core
@@ -51,6 +51,34 @@ def model_config(request):
     else:
         pmodel_form = PredictionModelForm(request.user)
         return render(request, "ews/model_config.html", {"pmodel_form": pmodel_form})
+
+
+@login_required
+def model_config2(request):
+    if request.method == "POST":
+        form = PredictionModelForm2(request.user, request.POST)
+        if form.is_valid():
+            pmodel = PredictionModel()
+            pmodel.user = request.user
+            pmodel.name = form.cleaned_data["name"]
+            pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
+            pmodel.save()
+            pmodel.station.set(form.cleaned_data["flow_station"])
+            pmodel.save()
+           
+            
+            return HttpResponseRedirect(reverse("ews:mlmodels"))
+        else:
+            return HttpResponse(request, "Form not valid")
+
+        return HttpResponseRedirect(reverse("ews:mlmodels"))
+    else:
+  
+        pmodel_form2 = PredictionModelForm2(request.user)
+        return render(request, "ews/model_config.html", { "pmodel_form2":pmodel_form2})
+
+
+
 
 
 
@@ -103,7 +131,7 @@ def add_station(request):
             new_station.bathing_spot.set(form.cleaned_data["bathing_spot"])
             new_station.save()
 
-        return HttpResponseRedirect(reverse('ews:index'))
+        return HttpResponseRedirect(reverse('ews:stations'))
     else:
         # prepopulating with dictionary
         form = StationForm()
@@ -163,7 +191,7 @@ def file_upload(request, station_id):
         if not result.has_errors():
             feature_resource.import_data(dataset, dry_run=False)  # Actually import now
         
-        return render(HttpResponseRedirect(reverse("ews:station_detail")))
+        return HttpResponseRedirect(reverse("ews:station_detail",    args=[station_id,]))
     return render(request, 'ews/import.html', {"station_id":station_id})
 
 

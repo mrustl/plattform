@@ -35,5 +35,22 @@ class PredictionModelForm(forms.ModelForm):
         self.helper = FormHelper()
     class Meta:
         model =  PredictionModel
-        fields=["bathing_spot", "station", "name"]
+        fields=["bathing_spot", "station", "station","name"]
         widgets={"station": forms.CheckboxSelectMultiple()}
+
+
+
+
+class PredictionModelForm2(forms.Form):
+    name=forms.CharField(label="Enter a informative name")
+    bathing_spot=forms.ModelChoiceField(queryset= BathingSpot.objects.all())
+    rain_station = forms.ModelMultipleChoiceField(queryset=Station.objects.all())
+    flow_station = forms.ModelMultipleChoiceField(queryset=Station.objects.all())
+
+    def __init__(self, user, *args, **kwargs):
+        super(PredictionModelForm2, self).__init__(*args, **kwargs)
+        self.fields['rain_station'].queryset = Station.objects.filter(owner = user, feature_type = 1)
+        self.fields['flow_station'].queryset = Station.objects.filter(owner = user, feature_type = 4)
+        self.fields['bathing_spot'].queryset = BathingSpot.objects.filter(user = user)
+        self.helper = FormHelper()
+    
