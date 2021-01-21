@@ -23,8 +23,8 @@
                    <p> {{entry.description|capfirst}} 
                    
                    <a href= "{% url 'ews:file_upload' entry.id  %}", class = "btn-sm btn-primary sm"> Add data </a>
-                   <a href= "{% url 'ews:station_detail' entry.id  %}", class = "btn-sm btn-secondary sm"> Details </a>
-                   <a href= "{% url 'ews:delete_station' entry.id  %}", class = "btn-sm btn-danger sm"> Delete </a>
+                   <a href= "{% url 'ews:site_detail' entry.id  %}", class = "btn-sm btn-secondary sm"> Details </a>
+                   <a href= "{% url 'ews:delete_site' entry.id  %}", class = "btn-sm btn-danger sm"> Delete </a>
                 
                 </div>
         </div>
@@ -38,7 +38,7 @@
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_station'%}"> Create new predictor</a>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
         <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
 
     </div>

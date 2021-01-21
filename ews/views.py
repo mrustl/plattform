@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import BathingSpotForm, StationForm, FeatureDataForm, PredictionModelForm, PredictionModelForm2
-from .models import BathingSpot, Station, FeatureData, FeatureType, User, PredictionModel
+from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, PredictionModelForm2
+from .models import BathingSpot, Site, FeatureData, FeatureType, User, PredictionModel
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
@@ -22,9 +22,9 @@ def bathingspots(request):
     return render(request, "ews/index.html", {"entries": entries})
 
 @login_required
-def stations(request):
-    stations = Station.objects.filter(owner = request.user)
-    return render(request, "ews/stations.html", {"entries": stations,"item": "spot"})
+def sites(request):
+    sites = Site.objects.filter(owner = request.user)
+    return render(request, "ews/sites.html", {"entries": sites,"item": "spot"})
 
 @login_required(login_url="login")
 def mlmodels(request):
@@ -41,7 +41,7 @@ def model_config(request):
             pmodel.name = form.cleaned_data["name"]
             pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
             pmodel.save()
-            pmodel.station.set(form.cleaned_data["station"])
+            pmodel.site.set(form.cleaned_data["site"])
             pmodel.save()
             return HttpResponseRedirect(reverse("ews:mlmodels"))
         else:
@@ -63,7 +63,7 @@ def model_config2(request):
             pmodel.name = form.cleaned_data["name"]
             pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
             pmodel.save()
-            pmodel.station.set(form.cleaned_data["flow_station"])
+            pmodel.site.set(form.cleaned_data["flow_site"])
             pmodel.save()
            
             
@@ -106,42 +106,42 @@ def spot_create(request):
 @login_required
 def detail_view(request, spot_id):
     entries = BathingSpot.objects.get(id = spot_id)
-    stations = entries.stations.values()
+   #sites = entries.sites.values()
     #featuretype = []
     
-    for i in range(len(stations)):
-        stations[i]["feature_type"] = FeatureType.objects.get(id = stations[i]['feature_type_id'])
+    #for i in range(len(sites)):
+      #  sites[i]["feature_type"] = FeatureType.objects.get(id = sites[i]['feature_type_id'])
     
-    return render(request, "ews/detail.html", {"entries": entries, "stations":stations})
+    return render(request, "ews/detail.html", {"entries": entries}) #, "sites":sites})
 
 
 @login_required
-def add_station(request):
-    new_station = Station()
+def add_site(request):
+    new_site = Site()
     if request.method == "POST":
-        form = StationForm(request.POST)
+        form = SiteForm(request.POST)
        # form.owner=request.user
         if form.is_valid():
             
-            new_station.name=form.cleaned_data["name"]
-            new_station.feature_type=form.cleaned_data["feature_type"]
+            new_site.name=form.cleaned_data["name"]
+            new_site.feature_type=form.cleaned_data["feature_type"]
             
-            new_station.owner=request.user
-            new_station.save()
-            new_station.bathing_spot.set(form.cleaned_data["bathing_spot"])
-            new_station.save()
+            new_site.owner=request.user
+            new_site.save()
+            new_site.bathing_spot.set(form.cleaned_data["bathing_spot"])
+            new_site.save()
 
-        return HttpResponseRedirect(reverse('ews:stations'))
+        return HttpResponseRedirect(reverse('ews:sites'))
     else:
         # prepopulating with dictionary
-        form = StationForm()
+        form = SiteForm()
         user_id = User.objects.filter(username=request.user).values()[0]["id"]
         spot= BathingSpot.objects.filter(user = user_id) 
-    return render(request, "ews/add_station.html", {"form":form, "spot":spot})
+    return render(request, "ews/add_site.html", {"form":form, "spot":spot})
 
-def delete_station(request, station_id):
-    Station.objects.get(id=station_id).delete()
-    return HttpResponseRedirect(reverse('ews:stations'))
+def delete_site(request, site_id):
+    Site.objects.get(id=site_id).delete()
+    return HttpResponseRedirect(reverse('ews:sites'))
 
 def delete_model(request, model_id):
     PredictionModel.objects.get(id=model_id).delete()
@@ -156,19 +156,19 @@ def add_data(request):
         form = FeatureDataForm(request.POST)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('ews:add_station'))
+        return HttpResponseRedirect(reverse('ews:add_site'))
     else:
         form = FeatureDataForm()
         
     return render(request, "ews/add_data.html", {"form":form})
 
-#def delete_station(request, station_id):
-#    Station.objects.filter(id=station_id).delete()
+#def delete_site(request, site_id):
+#    site.objects.filter(id=site_id).delete()
  #   return render(request, )
 
 #@login_required
 @login_required
-def file_upload(request, station_id):
+def file_upload(request, site_id):
     if request.method == 'POST':
 
         feature_resource = FeatureDataResource()
@@ -178,10 +178,10 @@ def file_upload(request, station_id):
 
         imported_data = dataset.load(new_data.read().decode("utf-8"), format="csv")
         #create an array containing the location_id
-        location_arr = [station_id] * len(imported_data)
+        location_arr = [site_id] * len(imported_data)
 
         # use the tablib API to add a new column, and insert the location array values
-        imported_data.append_col(location_arr, header="station")
+        imported_data.append_col(location_arr, header="site")
 
         try:
             result = feature_resource.import_data(dataset, dry_run=True)  # Test the data import
@@ -191,16 +191,16 @@ def file_upload(request, station_id):
         if not result.has_errors():
             feature_resource.import_data(dataset, dry_run=False)  # Actually import now
         
-        return HttpResponseRedirect(reverse("ews:station_detail",    args=[station_id,]))
-    return render(request, 'ews/import.html', {"station_id":station_id})
+        return HttpResponseRedirect(reverse("ews:site_detail",    args=[site_id,]))
+    return render(request, 'ews/import.html', {"site_id":site_id})
 
 
 
-def station_detail(request, station_id):
-        df = read_frame(FeatureData.objects.filter(station_id=station_id))
+def site_detail(request, site_id):
+        df = read_frame(FeatureData.objects.filter(site_id=site_id))
         fig = px.bar(df, "date", "value")
         fig = plot(fig, output_type = "div")
-        return render(request, "ews/station_detail.html", {"fig":fig, "data":df.to_html()})
+        return render(request, "ews/site_detail.html", {"fig":fig, "data":df.to_html()})
     
 
 
@@ -232,4 +232,3 @@ def register(request):
         return HttpResponseRedirect(reverse("ews:mlmodels"))
     else:
         return render(request, "ews/register.html")
-
