@@ -7,3 +7,6 @@ pandas
 django-pandas
 numpy
 sklearn
+django-leaflet
+django-geojson
+jsonfield

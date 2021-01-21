@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'leaflet',
+    'djgeojson',
     
 ]
 
@@ -55,6 +57,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'plattform.urls'
+
+LEAFLET_CONFIG = {
+    # conf here
+'DEFAULT_CENTER': (52.514541, 13.400862),
+'DEFAULT_ZOOM': 15,
+'MIN_ZOOM': 3,
+'MAX_ZOOM': 18,
+'FORCE_IMAGE_PATH': True
+}
+
+GDAL_LIBRARY_PATH = os.path.join(r'C:\Users\wolfg\miniconda3\envs', r'DWC\Library\bin\gdal302.dll') 
 
 TEMPLATES = [
     {
