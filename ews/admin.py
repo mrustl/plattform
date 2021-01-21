@@ -1,6 +1,8 @@
-from django.contrib import admin
-from ews.models import BathingSpot, Site, FeatureData, FeatureType, PredictionModel
+from django.contrib.gis import admin
+from .models import BathingSpot, Site, FeatureData, FeatureType, PredictionModel
 from import_export.admin import ImportExportModelAdmin
+from leaflet.admin import LeafletGeoAdmin
+from django.contrib.gis import admin
 
 
 
@@ -21,12 +23,13 @@ class FeatureTypeAdmin(admin.ModelAdmin):
 
     pass
 
-class SiteAdmin(admin.ModelAdmin):
-    list_display=("id", "name", "owner", "feature_type")
+#class SiteAdmin(admin.ModelAdmin):
+ #   list_display=("id", "name", "owner", "feature_type")
 
     pass
+admin.site.register(Site, LeafletGeoAdmin)
 
 admin.site.register(BathingSpot,BathingSpotAdmin)
-admin.site.register(Site, SiteAdmin)
+#admin.site.register(Site, SiteAdmin)
 admin.site.register(PredictionModel)
 admin.site.register(FeatureType, FeatureTypeAdmin)

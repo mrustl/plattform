@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'django_extensions',
     'leaflet',
     'djgeojson',
@@ -60,8 +61,8 @@ ROOT_URLCONF = 'plattform.urls'
 
 LEAFLET_CONFIG = {
     # conf here
-'DEFAULT_CENTER': (52.514541, 13.400862),
-'DEFAULT_ZOOM': 15,
+'DEFAULT_CENTER': (48.9, 2.400862),
+'DEFAULT_ZOOM': 11,
 'MIN_ZOOM': 3,
 'MAX_ZOOM': 18,
 'FORCE_IMAGE_PATH': True

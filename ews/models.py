@@ -20,12 +20,18 @@ class FeatureType(models.Model):
 class Site(models.Model):
     name = models.CharField(max_length=64)
     ref_name =  models.CharField(max_length=64, null = True )
-    location = PointField(null = True)
+    geom= PointField(null = True)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="owner")
     feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name="feature_type")
     
     def __str__(self):
         return f"{self.name}"
+    
+    @property
+    def popupContent(self):
+      return '<p> <strong>{}</strong> <br> {}</p>'.format(
+          self.name,
+          self.feature_type)
 
 class FeatureData(models.Model):
     date = models.DateTimeField()

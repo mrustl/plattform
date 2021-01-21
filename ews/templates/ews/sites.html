@@ -1,7 +1,12 @@
 {% extends "ews/base.html" %}
+{% load leaflet_tags %}
+ {% load geojson_tags %}
 
-{% block title %}
-    
+{% block head %}
+
+ {% leaflet_css %}
+ 
+  {% leaflet_js %}
 {% endblock %}
 
 {% block body %}
@@ -9,6 +14,26 @@
 
   <div class="row">
     <div class="col-sm-8">
+      <div>
+      <script type="text/javascript">
+        var collection = {{ entries|geojsonfeature:"popupContent"|safe }};
+
+        function onEachFeature(feature, layer) {
+           if (feature.properties && feature.properties.popupContent) {
+            layer.bindPopup(feature.properties.popupContent);
+             }
+            }
+
+        function map_init(map, options) {
+          L.geoJson(collection,{onEachFeature: onEachFeature}).addTo(map);
+        }
+
+      </script>
+
+      {% leaflet_map "spots" callback="window.map_init" %}
+
+
+      </div>
    
     <ul>
         {% for entry in entries %}
@@ -34,7 +59,7 @@
         
     </ul>
     </div>
-
+  
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
