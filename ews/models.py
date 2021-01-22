@@ -13,7 +13,7 @@ class BathingSpot(models.Model):
 
 class FeatureType(models.Model):
     name = models.CharField(max_length=64)
-    unit = models.CharField(max_length=64)
+    unit = models.CharField(max_length=64, null = True)
     def __str__(self):
         return f"{self.name}"
 
@@ -35,7 +35,7 @@ class Site(models.Model):
 
 class FeatureData(models.Model):
     date = models.DateTimeField()
-    value = models.DecimalField(max_digits=6, decimal_places=2)
+    value = models.DecimalField(max_digits=1000, decimal_places=10)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site")
     class Meta:
         unique_together = ('date', 'site',)
