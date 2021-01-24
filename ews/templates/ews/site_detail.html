@@ -2,7 +2,10 @@
 
 {% block body %}
 <div class="container" style="padding: 5%">
-
+  <h4 class="media-heading">{{entry.name|title}}</h4>
+  <span><a href= "{% url 'ews:file_upload' entry.id  %}", class = "btn-sm btn-primary sm"> Add data </a>
+  <a href= "{% url 'ews:delete_site' entry.id  %}", class = "btn-sm btn-danger sm"> Delete </a>
+  </span>
   <div class="row">
     <div class="col-sm-8">
    
@@ -12,6 +15,12 @@
               {% endautoescape %}
 
 </div>
+
+  <div class="media-body">
+           
+             <p> {{entry.description|capfirst}} 
+  </div>
+
 <div class="table-responsive table-body">
     <div class="table table-hover" style = "width:100%;">
       {{data|safe}}

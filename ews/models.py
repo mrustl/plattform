@@ -18,7 +18,7 @@ class FeatureType(models.Model):
         return f"{self.name}"
 
 class Site(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     ref_name =  models.CharField(max_length=64, null = True )
     geom= PointField(null = True)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="owner")
@@ -29,10 +29,11 @@ class Site(models.Model):
     
     @property
     def popupContent(self):
-      return '<p> <strong>{}</strong> <br> {}</p>'.format(
+      return '<a href="site_detail/{}"><strong>{}</strong></a> <p> {}</p>'.format(
+          self.id,
           self.name,
           self.feature_type)
-
+#"{% url 'ews:site_detail' entry.id  %}"
 class FeatureData(models.Model):
     date = models.DateTimeField()
     value = models.DecimalField(max_digits=1000, decimal_places=10)

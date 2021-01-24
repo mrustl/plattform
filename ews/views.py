@@ -24,7 +24,7 @@ def bathingspots(request):
 @login_required
 def sites(request):
     sites = Site.objects.filter(owner = request.user)
-    return render(request, "ews/sites.html", {"entries": sites,"item": "spot"})
+    return render(request, "ews/sites.html", {"entries": sites})#,"item": "spot"})
 
 @login_required(login_url="login")
 def mlmodels(request):
@@ -198,9 +198,13 @@ def file_upload(request, site_id):
 
 def site_detail(request, site_id):
         df = read_frame(FeatureData.objects.filter(site_id=site_id))
-        fig = px.bar(df, "date", "value")
+        entry = Site.objects.get(id = site_id)
+        fig = px.bar(df, "date", "value",  opacity = 1)
+        fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+                  marker_line_width=1.5, opacity=0.6)
+        #fig.update_layout(title_text=df.site[0].replace("_", " "))
         fig = plot(fig, output_type = "div")
-        return render(request, "ews/site_detail.html", {"fig":fig, "data":df.to_html()})
+        return render(request, "ews/site_detail.html", {"fig":fig, "entry":entry})#, "data":df.to_html()})
     
 
 

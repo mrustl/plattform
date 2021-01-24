@@ -61,7 +61,7 @@ ROOT_URLCONF = 'plattform.urls'
 
 LEAFLET_CONFIG = {
     # conf here
-'DEFAULT_CENTER': (48.9, 2.400862),
+'DEFAULT_CENTER': (48.85, 2.400862),
 'DEFAULT_ZOOM': 11,
 'MIN_ZOOM': 3,
 'MAX_ZOOM': 18,
