@@ -20,7 +20,7 @@ class FeatureType(models.Model):
 class Site(models.Model):
     name = models.CharField(max_length=64, unique=True)
     ref_name =  models.CharField(max_length=64, null = True )
-    geom= PointField(null = True)
+    geom = PointField(null = True)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="owner")
     feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name="feature_type")
     
@@ -33,6 +33,9 @@ class Site(models.Model):
           self.id,
           self.name,
           self.feature_type)
+    @property
+    def SiteType(self):
+        return '{}'.format(self.feature_type)
 #"{% url 'ews:site_detail' entry.id  %}"
 class FeatureData(models.Model):
     date = models.DateTimeField()
