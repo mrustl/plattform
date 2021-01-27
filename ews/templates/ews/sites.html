@@ -76,31 +76,7 @@
 
 
       </div>
-   <!--
-    <ul>
-        {% for entry in entries %}
-     <div class="media px-3 mt-3">
-              <div class="media-left pr-3">
-            
-              <img class= "img-fluid" src="/static/ews/img/placeholder_dwc.png" alt="...">
-            </a>
-        </div>
-        <div class="media-body">
-                  <h4 class="media-heading">{{entry.name|title}}</h4>
-                   <p> {{entry.description|capfirst}} 
-                   
-                   <a href= "{% url 'ews:file_upload' entry.id  %}", class = "btn-sm btn-primary sm"> Add data </a>
-                   <a href= "{% url 'ews:site_detail' entry.id  %}", class = "btn-sm btn-secondary sm"> Details </a>
-                   <a href= "{% url 'ews:delete_site' entry.id  %}", class = "btn-sm btn-danger sm"> Delete </a>
-                
-                </div>
-        </div>
-        {% empty %}
-        <p>No predictor variable exist, yet. Create one and start modelling!</p>
-        {% endfor %}
-        
-    </ul>
-    -->
+
     </div>
   
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 

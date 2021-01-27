@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from djgeojson.fields import PointField
+from djgeojson.fields import PointField, MultiPolygonField
 # Create your models here.
 
 
@@ -39,10 +39,10 @@ class Site(models.Model):
 #"{% url 'ews:site_detail' entry.id  %}"
 class FeatureData(models.Model):
     date = models.DateTimeField()
-    value = models.DecimalField(max_digits=1000, decimal_places=10)
+    value = models.DecimalField(max_digits=1000, decimal_places=3)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site")
     class Meta:
-        unique_together = ('date', 'site',)
+        unique_together = ('date', 'site','value',)
     
 class PredictionModel(models.Model):
     name = models.CharField(max_length=64)
@@ -51,3 +51,8 @@ class PredictionModel(models.Model):
     site = models.ManyToManyField(Site, related_name = "models", null = True, blank = True)
     def __str__(self):
         return f"{self.name}"
+
+class SelectArea(models.Model):
+    name = models.CharField(max_length=64)
+    geom = MultiPolygonField()
+    feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name = "areas")

@@ -1,0 +1,35 @@
+{% extends "ews/base.html" %}
+{% load leaflet_tags %}
+{% load geojson_tags %}
+{% block head %}
+
+   {% leaflet_js plugins="forms" %}
+   {% leaflet_css plugins="forms" %}
+
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: 2%">
+    <div class="row">
+       <div class="col-sm-8">
+           <div>
+            <h4>Overview of available measurement sites</h4>
+               <p>Click on the markers to see details and to add data</p>
+                  
+                <form action= "{% url 'ews:selectarea_create' %}" method = "post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit"/>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
+        <h4 class= "mb-3">Options</h4>
+            <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
+            <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
+            <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

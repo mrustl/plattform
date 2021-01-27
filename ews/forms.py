@@ -53,4 +53,15 @@ class PredictionModelForm2(forms.Form):
         self.fields['flow_site'].queryset = Site.objects.filter(owner = user, feature_type = 4)
         self.fields['bathing_spot'].queryset = BathingSpot.objects.filter(user = user)
         self.helper = FormHelper()
-    
+
+from leaflet.forms.widgets import LeafletWidget
+from .models import SelectArea
+
+class SelectAreaForm(forms.ModelForm):
+
+    class Meta:
+        model = SelectArea
+        fields = ('name', 'geom', 'feature_type')
+        widgets = {'geom': LeafletWidget()}
+
+

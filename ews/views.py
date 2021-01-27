@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, PredictionModelForm2
-from .models import BathingSpot, Site, FeatureData, FeatureType, User, PredictionModel
+from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, SelectAreaForm, PredictionModelForm2
+from .models import BathingSpot, Site, FeatureData, FeatureType, User, PredictionModel, SelectArea
 from django.urls import reverse
 from tablib import Dataset, core
 from .resources import FeatureDataResource
@@ -206,6 +206,24 @@ def site_detail(request, site_id):
         fig = plot(fig, output_type = "div")
         return render(request, "ews/site_detail.html", {"fig":fig, "entry":entry})#, "data":df.to_html()})
     
+
+def selectarea_create(request):
+    if request.method == "POST":
+        form = SelectAreaForm(request.POST)
+        if form.is_valid():
+            selectarea = SelectArea()
+            selectarea.name = form.cleaned_data["name"]
+            selectarea.geom = form.cleaned_data["geom"]
+            selectarea.feature_type = form.cleaned_data["feature_type"]
+            selectarea.save()
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponse("Submission not successfull")
+    else:
+        form = SelectAreaForm()
+        #HttpResponse("it worked")
+        return render(request, 'ews/selectarea_create.html', {'form': form})
+
 
 
 

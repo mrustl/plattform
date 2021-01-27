@@ -23,6 +23,7 @@ path("add_site", views.add_site, name="add_site"),
 path("delete_site/<int:site_id>", views.delete_site, name="delete_site"),
 path("site_detail/<int:site_id>", views.site_detail, name="site_detail"),
 
+path("selectarea_create", views.selectarea_create, name="selectarea_create"),
 # ??
 path("detail/<int:spot_id>", views.detail_view, name = "detail"),
 path("file_upload/<int:site_id>", views.file_upload, name="file_upload"),
