@@ -214,6 +214,7 @@ def selectarea_create(request):
             selectarea = SelectArea()
             selectarea.name = form.cleaned_data["name"]
             selectarea.geom = form.cleaned_data["geom"]
+            
             selectarea.feature_type = form.cleaned_data["feature_type"]
             selectarea.save()
             return HttpResponseRedirect(reverse("index"))
