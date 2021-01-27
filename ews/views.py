@@ -217,7 +217,7 @@ def selectarea_create(request):
             
             selectarea.feature_type = form.cleaned_data["feature_type"]
             selectarea.save()
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("ews:sites"))
         else:
             return HttpResponse("Submission not successfull")
     else:

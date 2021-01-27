@@ -2,7 +2,7 @@ from ews.models import BathingSpot, Site, FeatureData, FeatureType, PredictionMo
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, ButtonHolder, Submit
-
+from djgeojson.fields import PointField, MultiPolygonField
 
 class BathingSpotForm(forms.ModelForm):
     class Meta:

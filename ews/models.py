@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from djgeojson.fields import PointField, MultiPolygonField
+from djgeojson.fields import PointField, PolygonField
 # Create your models here.
 
 
@@ -54,5 +54,5 @@ class PredictionModel(models.Model):
 
 class SelectArea(models.Model):
     name = models.CharField(max_length=64)
-    geom = MultiPolygonField()
+    geom = PolygonField()
     feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name = "areas")
