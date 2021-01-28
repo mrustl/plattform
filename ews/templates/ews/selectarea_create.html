@@ -1,6 +1,7 @@
 {% extends "ews/base.html" %}
 {% load leaflet_tags %}
 {% load geojson_tags %}
+{% load crispy_forms_tags %}
 {% block head %}
 
    {% leaflet_js plugins="forms" %}
@@ -13,12 +14,12 @@
     <div class="row">
        <div class="col-sm-8">
            <div>
-            <h4>Overview of available measurement sites</h4>
-               <p>Click on the markers to see details and to add data</p>
+            <h4>Variable selection map</h4>
+               <p>Use the map to define relevant catchments for predictor variables</p>
                   
                 <form action= "{% url 'ews:selectarea_create' %}" method = "post">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ form|crispy }}
                     <input type="submit"/>
                 </form>
             </div>
