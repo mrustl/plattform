@@ -29,14 +29,14 @@ class PredictionModelForm(forms.ModelForm):
         self.fields['site'].empty_label = None
         self.fields['bathing_spot'].empty_label = None
         self.fields['bathing_spot'].help_text = "Please select the bathing water for which you want to create a prediction model"
-        self.fields['site'].queryset = Site.objects.filter(owner = user)
+        self.fields['site'].queryset = Site.objects.filter(owner = user, feature_type__in= FeatureType.objects.filter(name = "BathingSpot"))
         self.fields['bathing_spot'].queryset = BathingSpot.objects.filter(user = user)
         
         self.helper = FormHelper()
     class Meta:
         model =  PredictionModel
-        fields=["bathing_spot", "site", "site","name"]
-        widgets={"site": forms.CheckboxSelectMultiple()}
+        fields=["bathing_spot", "site", "area","name"]
+        widgets={"area": forms.CheckboxSelectMultiple()}
 
 
 

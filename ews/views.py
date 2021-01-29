@@ -24,7 +24,8 @@ def bathingspots(request):
 @login_required
 def sites(request):
     sites = Site.objects.filter(owner = request.user)
-    return render(request, "ews/sites.html", {"entries": sites})#,"item": "spot"})
+    areas = SelectArea.objects.all()
+    return render(request, "ews/sites.html", {"entries": sites, "areas":areas})#,"item": "spot"})
 
 @login_required(login_url="login")
 def mlmodels(request):
@@ -42,6 +43,7 @@ def model_config(request):
             pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
             pmodel.save()
             pmodel.site.set(form.cleaned_data["site"])
+            pmodel.area.set(form.cleaned_data["area"])
             pmodel.save()
             return HttpResponseRedirect(reverse("ews:mlmodels"))
         else:
@@ -217,7 +219,7 @@ def selectarea_create(request):
             
             selectarea.feature_type = form.cleaned_data["feature_type"]
             selectarea.save()
-            return HttpResponseRedirect(reverse("ews:sites"))
+            return HttpResponseRedirect(reverse("ews:selectarea_create"))
         else:
             return HttpResponse("Submission not successfull")
     else:

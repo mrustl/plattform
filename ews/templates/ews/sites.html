@@ -55,7 +55,7 @@
       <div>
       <script type="text/javascript">
         var collection = {{ entries|geojsonfeature:"popupContent,SiteType"|safe }};
-
+        var areas = {{ areas|geojsonfeature:"popupContent,SiteType"|safe }};
         function onEachFeature(feature, layer) {
            if (feature.properties && feature.properties.popupContent) {
             layer.bindPopup(feature.properties.popupContent);
@@ -81,11 +81,11 @@
                  
 }
                      
-
+        
 
         function map_init(map, options) {
-
-          L.geoJson(collection,{onEachFeature: onEachFeature, 
+            var layerControl = L.control.layers().addTo(map);
+          var sites = L.geoJson(collection,{onEachFeature: onEachFeature, 
             pointToLayer: function (feature, latlng) {
              return L.circleMarker(latlng, geojsonMarkerOptions);
             },
@@ -99,7 +99,24 @@
             
         }
     }
-           }).addTo(map);
+           })
+        
+           layerControl.addOverlay(sites, "Sites");
+       
+        
+
+    var area_layer = L.geoJson(areas, {style:function(feature) {
+         switch (feature.properties.SiteType) {
+            case 'Network': return {fillColor: 'rgb(255, 130, 104)', color: 'rgb(255, 130, 104)'};
+            case 'WWTP':   return {fillColor: 'rgb(178, 83, 64)'};
+            case 'Riverflow':   return {fillColor: 'rgb(64, 129, 178)', color:'rgb(64, 129, 178)' };
+            case 'BathingSpot':   return {fillColor: '#3185ff'};
+            case 'Rainfall':   return {fillColor: 'rgb(117, 195, 255)' , color: 'rgb(117, 195, 255)'};
+            
+        }
+    }
+           })
+           layerControl.addOverlay(area_layer, "SelectAreas");
 
            var legend = L.control({position: 'bottomright'});
 

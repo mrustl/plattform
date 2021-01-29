@@ -44,15 +44,23 @@ class FeatureData(models.Model):
     class Meta:
         unique_together = ('date', 'site','value',)
     
-class PredictionModel(models.Model):
-    name = models.CharField(max_length=64)
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name = "models")
-    bathing_spot = models.ForeignKey(BathingSpot, on_delete=models.CASCADE, related_name="models")
-    site = models.ManyToManyField(Site, related_name = "models", null = True, blank = True)
-    def __str__(self):
-        return f"{self.name}"
+
 
 class SelectArea(models.Model):
     name = models.CharField(max_length=64)
     geom = PolygonField()
     feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name = "areas")
+    @property
+    def SiteType(self):
+        return '{}'.format(self.feature_type)
+    def __str__(self):
+            return f"{self.name}"
+
+class PredictionModel(models.Model):
+    name = models.CharField(max_length=64)
+    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name = "models")
+    bathing_spot = models.ForeignKey(BathingSpot, on_delete=models.CASCADE, related_name="models")
+    site = models.ManyToManyField(Site, related_name = "models", null = True, blank = True)
+    area = models.ManyToManyField(SelectArea, related_name = "models", null = True, blank = True)
+    def __str__(self):
+        return f"{self.name}"
