@@ -224,8 +224,8 @@ def selectarea_create(request):
             return HttpResponse("Submission not successfull")
     else:
         form = SelectAreaForm()
-        #HttpResponse("it worked")
-        return render(request, 'ews/selectarea_create.html', {'form': form})
+        entries = Site.objects.all()
+        return render(request, 'ews/selectarea_create.html', {'form': form, 'entries': entries})
 
 
 

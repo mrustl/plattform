@@ -10,3 +10,5 @@ sklearn
 django-leaflet
 django-geojson
 jsonfield
+requests
+urllib3[secure]   

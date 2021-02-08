@@ -31,7 +31,7 @@ class Site(models.Model):
     def popupContent(self):
       return '<a href="site_detail/{}"><strong>{}</strong></a> <p> {}</p>'.format(
           self.id,
-          self.name,
+          self.name.replace('_', ' ').capitalize(),
           self.feature_type)
     @property
     def SiteType(self):

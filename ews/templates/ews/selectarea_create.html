@@ -33,4 +33,38 @@
         </div>
     </div>
 </div>
+
+        <script>
+    window.addEventListener("map:init", function (e) {
+        var detail = e.detail;
+        var collection = {{ entries|geojsonfeature:"SiteType"|safe }};
+        
+        var geojsonMarkerOptions = {
+                          radius: 8,
+                          fillColor: "rgb(0, 86, 110)",
+                          color: "grey",
+                          weight: 1,
+                          opacity: 1,
+                          fillOpacity: 0.8
+                      };
+
+        
+        L.geoJson(collection,{ pointToLayer: function (feature, latlng) {
+             return L.circleMarker(latlng, geojsonMarkerOptions);
+            },
+            style: function(feature) {
+         switch (feature.properties.SiteType) {
+            case 'Network': return {fillColor: 'rgb(255, 130, 104)', radius: 4};
+            case 'WWTP':   return {fillColor: 'rgb(178, 83, 64)', radius: 12};
+            case 'Riverflow':   return {fillColor: 'rgb(64, 129, 178)' , radius: 10};
+            case 'BathingSpot':   return {fillColor: '#3185ff', radius: 10};
+            case 'Rainfall':   return {fillColor: 'rgb(117, 195, 255)' };
+            
+        }
+    }
+           }).addTo(detail.map);
+        
+    }, false);
+</script>
+   
 {% endblock %}
