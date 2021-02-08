@@ -206,6 +206,7 @@ def site_detail(request, site_id):
                   marker_line_width=1.5, opacity=0.6)
         #fig.update_layout(title_text=df.site[0].replace("_", " "))
         fig = plot(fig, output_type = "div")
+        
         return render(request, "ews/site_detail.html", {"fig":fig, "entry":entry})#, "data":df.to_html()})
     
 

@@ -47,7 +47,7 @@ class FeatureData(models.Model):
 
 
 class SelectArea(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     geom = PolygonField()
     feature_type = models.ForeignKey(FeatureType, on_delete=models.CASCADE, related_name = "areas")
     @property
