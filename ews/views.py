@@ -40,7 +40,7 @@ def model_config(request):
             pmodel = PredictionModel()
             pmodel.user = request.user
             pmodel.name = form.cleaned_data["name"]
-            pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
+            #pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
             pmodel.save()
             pmodel.site.set(form.cleaned_data["site"])
             pmodel.area.set(form.cleaned_data["area"])
@@ -316,4 +316,4 @@ def model_fit(request, model_id):
 
     feature_importance = plot(fig, output_type = "div")
 
-    return render(request, 'ews/model_fit.html', {'model':model, "entries": model.site.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
+    return render(request, 'ews/model_fit.html', {'model':model, "entries": Site.objects.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
