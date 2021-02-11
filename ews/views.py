@@ -15,6 +15,7 @@ from plotly.offline import plot
 from django_pandas.io import read_frame
 # Create your views here.
 
+
 @login_required
 def bathingspots(request):
     entries = BathingSpot.objects.filter(user = request.user)
@@ -229,10 +230,6 @@ def selectarea_create(request):
         return render(request, 'ews/selectarea_create.html', {'form': form, 'entries': entries})
 
 
-
-
-
-
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -258,3 +255,92 @@ def register(request):
         return HttpResponseRedirect(reverse("ews:mlmodels"))
     else:
         return render(request, "ews/register.html")
+
+
+import json
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error as MSE
+from shapely.geometry import shape, Point
+import statsmodels
+
+def model_fit(request, model_id):
+    model = PredictionModel.objects.get(id = model_id)
+    areas = read_frame(model.area.all())
+    areavars = []
+    for index1, row1 in areas.iterrows():
+        df = read_frame(Site.objects.filter(feature_type = FeatureType.objects.get(name=row1["feature_type"])))
+        polygon = shape(row1["geom"])
+        select = []
+        
+        for index2, row2 in df.iterrows():
+            select.append(polygon.contains(shape(row2['geom'])))
+        data = read_frame(FeatureData.objects.filter(site__in = df[select]['id']), index_col = "date")
+        data["area"] = row1["name"]
+        data["feature_type"] = row1["feature_type"]
+        areavars.append(data)
+    lagvars = []
+
+    for i in range(len(areavars)):
+        ft = areavars[i].area.unique()
+        d = areavars[i].pivot(columns = 'site', values = 'value')
+        if len(d.columns) > 1:
+            d = pd.DataFrame(d.mean(axis = 1, skipna = True))
+        for j in [1, 2, 3, 4, 5]:
+            df = pd.DataFrame()
+            df[ft + '_shift_'+ str(j)] = d.rolling(window=j).mean().shift(1)
+            lagvars.append(df)
+            
+    res = pd.concat(lagvars, axis = 1)
+    res = res[res.index.month.isin([ 6, 7, 8, 9])].reset_index()
+
+    FIB = read_frame(FeatureData.objects.filter(site = model.site.all()[0]))
+    d = FIB.merge(res, on= "date")
+    D = d.dropna()
+    y = np.log10(D["value"])
+    X = D.drop(["date", "value", "id", "site"], axis = 1)
+    rf = RandomForestRegressor()
+    rf.fit(X, y)
+    y_pred= rf.predict(X)
+    mean_squard_error = MSE(y, y_pred)
+    df = pd.DataFrame({'meas': y, 'pred':y_pred})
+
+    fig = px.scatter(df, x = "meas", y = "pred", trendline="ols")
+
+    fig.update_layout(
+        font_family="Helvetica Neue, Helvetica, Arial, sans-serif",
+        font_color="black",
+        title = {'text':'Model fit of Random Forest model'},
+        xaxis_title = "measured data (sample)",
+        yaxis_title = "fitted values (in sample fit)",
+        #markercolor = "#212c52"
+        
+        )
+
+    fig.update_traces(marker_color='#75c3ff', marker_line_color='#212c52',
+                        marker_line_width=1.5, opacity=1)
+
+    model_fit = plot(fig, output_type = "div")
+
+    importances = pd.Series(data=rf.feature_importances_,
+                        index= X.columns)
+
+        # Sort importances
+    importances_sorted = importances.sort_values()
+    importances_df = importances_sorted.reset_index()
+    importances_df.columns = ["feature", "importance"]
+    fig = px.bar(importances_df, y="feature", x="importance", orientation='h'    )
+
+    fig.update_layout(
+            font_family="Helvetica Neue, Helvetica, Arial, sans-serif",
+            font_color="black",
+            title = {'text':'Feature importance of Random Forest model'}
+            #markercolor = "#212c52"
+        
+        )
+    fig.update_traces(marker_color='#75c3ff', marker_line_color='#75c3ff',
+                        marker_line_width=1.5, opacity=1)
+
+    feature_importance = plot(fig, output_type = "div")
+
+    return render(request, 'ews/model_fit.html', {'model':model, 'model_fit':model_fit, 'feature_importance':feature_importance})

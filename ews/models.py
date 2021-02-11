@@ -64,3 +64,4 @@ class PredictionModel(models.Model):
     area = models.ManyToManyField(SelectArea, related_name = "models", null = True, blank = True)
     def __str__(self):
         return f"{self.name}"
+        

@@ -27,4 +27,5 @@ path("selectarea_create", views.selectarea_create, name="selectarea_create"),
 # ??
 path("detail/<int:spot_id>", views.detail_view, name = "detail"),
 path("file_upload/<int:site_id>", views.file_upload, name="file_upload"),
+path('model_fit(<int:model_id>', views.model_fit, name ='model_fit')
 ]

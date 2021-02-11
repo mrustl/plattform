@@ -14,7 +14,7 @@
         {% for entry in entries %}
      <div class="media px-3 mt-3">
               <div class="media-left pr-3">
-             <a href= "{% url 'ews:detail' entry.id %}" > 
+              <!-- <a href= "{% url 'ews:detail' entry.id %}" > -->
               <img class= "img-fluid" src="/static/ews/img/placeholder_dwc.png" alt="...">
             </a>
         </div>
@@ -22,7 +22,7 @@
         <div class="media-body">
                   <h4 class="media-heading">{{entry.name|title}}</h4>
                    <p> {{entry.description|capfirst}} 
-                   <a href= "", class = "btn-sm btn-primary sm"> Edit </a>
+                   <a href= "{% url 'ews:model_fit' entry.id %}", class = "btn-sm btn-primary sm"> Fit model </a>
                    <a href= "{% url 'ews:delete_model' entry.id %}", class = "btn-sm btn-danger sm"> Delete </a>
                 </div>
         </div>
