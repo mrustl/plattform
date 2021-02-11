@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, SelectAreaForm, PredictionModelForm2
+from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, SelectAreaForm
 from .models import BathingSpot, Site, FeatureData, FeatureType, User, PredictionModel, SelectArea
 from django.urls import reverse
 from tablib import Dataset, core
@@ -18,15 +18,14 @@ from django_pandas.io import read_frame
 
 @login_required
 def bathingspots(request):
-    entries = BathingSpot.objects.filter(user = request.user)
+    entries = Site.objects.filter(owner = request.user, feature_type = FeatureType.objects.get(name = 'BathingSpot'))
 
     return render(request, "ews/index.html", {"entries": entries})
 
 @login_required
 def sites(request):
     sites = Site.objects.filter(owner = request.user)
-    areas = SelectArea.objects.all()
-    return render(request, "ews/sites.html", {"entries": sites, "areas":areas})#,"item": "spot"})
+    return render(request, "ews/sites.html", {"entries": sites})#,"item": "spot"})
 
 @login_required(login_url="login")
 def mlmodels(request):
@@ -55,36 +54,9 @@ def model_config(request):
         pmodel_form = PredictionModelForm(request.user)
         return render(request, "ews/model_config.html", {"pmodel_form": pmodel_form})
 
-
-@login_required
-def model_config2(request):
-    if request.method == "POST":
-        form = PredictionModelForm2(request.user, request.POST)
-        if form.is_valid():
-            pmodel = PredictionModel()
-            pmodel.user = request.user
-            pmodel.name = form.cleaned_data["name"]
-            pmodel.bathing_spot=form.cleaned_data["bathing_spot"]
-            pmodel.save()
-            pmodel.site.set(form.cleaned_data["flow_site"])
-            pmodel.save()
-           
-            
-            return HttpResponseRedirect(reverse("ews:mlmodels"))
-        else:
-            return HttpResponse(request, "Form not valid")
-
-        return HttpResponseRedirect(reverse("ews:mlmodels"))
-    else:
-  
-        pmodel_form2 = PredictionModelForm2(request.user)
-        return render(request, "ews/model_config.html", { "pmodel_form2":pmodel_form2})
-
-
-
-
-
-
+def model_edit(request, model_id):
+    model = PredictionModel.objects.get(id = model_id)
+    return render(request, 'ews/sites.html', {"entries": model.site.all(), 'areas': model.area.all()})
 
 
 @login_required
@@ -227,7 +199,8 @@ def selectarea_create(request):
     else:
         form = SelectAreaForm()
         entries = Site.objects.all()
-        return render(request, 'ews/selectarea_create.html', {'form': form, 'entries': entries})
+        areas = SelectArea.objects.all()
+        return render(request, 'ews/selectarea_create.html', {'form': form, 'areas':areas, 'entries': entries})
 
 
 def register(request):
@@ -343,4 +316,4 @@ def model_fit(request, model_id):
 
     feature_importance = plot(fig, output_type = "div")
 
-    return render(request, 'ews/model_fit.html', {'model':model, 'model_fit':model_fit, 'feature_importance':feature_importance})
+    return render(request, 'ews/model_fit.html', {'model':model, "entries": model.site.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})

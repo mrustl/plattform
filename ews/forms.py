@@ -25,17 +25,17 @@ class FeatureDataForm(forms.ModelForm):
 class PredictionModelForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(PredictionModelForm, self).__init__(*args, **kwargs)
-        self.fields['site'].help_text = "Please select the predictor variable which you want to use to model calibration"
+        self.fields['area'].help_text = "Please selectthe areas you've created, which you want to use to model calibration"
         self.fields['site'].empty_label = None
-        self.fields['bathing_spot'].empty_label = None
-        self.fields['bathing_spot'].help_text = "Please select the bathing water for which you want to create a prediction model"
+        #self.fields['bathing_spot'].empty_label = None
+        self.fields['site'].help_text = "Please select the bathing water for which you want to create a prediction model"
         self.fields['site'].queryset = Site.objects.filter(owner = user, feature_type__in= FeatureType.objects.filter(name = "BathingSpot"))
-        self.fields['bathing_spot'].queryset = BathingSpot.objects.filter(user = user)
+        #self.fields['bathing_spot'].queryset = BathingSpot.objects.filter(user = user)
         
         self.helper = FormHelper()
     class Meta:
         model =  PredictionModel
-        fields=["bathing_spot", "site", "area","name"]
+        fields=[ "site", "area","name"]
         widgets={"area": forms.CheckboxSelectMultiple()}
 
 

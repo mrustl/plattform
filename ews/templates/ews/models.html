@@ -23,7 +23,7 @@
                   <h4 class="media-heading">{{entry.name|title}}</h4>
                    <p> {{entry.description|capfirst}} 
                    <a href= "{% url 'ews:model_fit' entry.id %}", class = "btn-sm btn-primary sm"> Fit model </a>
-                   <a href= "{% url 'ews:delete_model' entry.id %}", class = "btn-sm btn-danger sm"> Delete </a>
+                   <a href= "{% url 'ews:model_edit' entry.id %}", class = "btn-sm btn-danger sm"> Edit config </a>
                 </div>
         </div>
         {% empty %}
