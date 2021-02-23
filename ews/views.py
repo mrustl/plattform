@@ -238,7 +238,7 @@ from sklearn.metrics import mean_squared_error
 from shapely.geometry import shape, Point
 import statsmodels
 from sklearn.model_selection import GridSearchCV, train_test_split
-
+import pickle
 
 def model_fit(request, model_id):
     model = PredictionModel.objects.get(id = model_id)
@@ -280,37 +280,41 @@ def model_fit(request, model_id):
     
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    grid = {'n_estimators':[100], 'max_depth': np.linspace(10, 15, 6), 'max_features': [4,6,8]} 
+
+    if model.fit == None:
+
+        grid = {'n_estimators':[100], 'max_depth': np.linspace(10, 15, 6), 'max_features': [4,6,8]} 
     
+        # Instantiate the Random regressor: elastic_net
+        rf = RandomForestRegressor()
 
-    # Instantiate the ElasticNet regressor: elastic_net
-    rf = RandomForestRegressor()
+        # Setup the GridSearchCV object: gm_cv
+        gm_cv = GridSearchCV(rf, param_grid=grid, cv = 5)
 
-    # Setup the GridSearchCV object: gm_cv
-    gm_cv = GridSearchCV(rf, param_grid=grid, cv = 5)
+        # Fit it to the training data
 
-    # Fit it to the training data
-
-    gm_cv.fit(X_train, y_train)
-    rf = RandomForestRegressor(n_estimators = gm_cv.best_params_["n_estimators"],
-                          max_depth = gm_cv.best_params_["max_depth"],
-                          max_features = gm_cv.best_params_["max_features"])
-    rf.fit(X_train, y_train)
-
-
+        gm_cv.fit(X_train, y_train)
+        rf = RandomForestRegressor(n_estimators = gm_cv.best_params_["n_estimators"],
+                            max_depth = gm_cv.best_params_["max_depth"],
+                            max_features = gm_cv.best_params_["max_features"])
+        rf.fit(X_train, y_train)
+        model.fit = pickle.dumps(rf)
+        model.save()
+    
+    rf = pickle.loads(model.fit)
     # Predict on the test set and compute metrics
     #y_pred1 = gm_cv.predict(X_test)
     y_pred = rf.predict(X_test)
 
 
-    r2 = rf.score(X_test, y_test)
-    r2_in = rf.score(X_train, y_train)
+    #r2 = rf.score(X_test, y_test)
+    #r2_in = rf.score(X_train, y_train)
 
-    mse = mean_squared_error(y_test, y_pred)
-    mse_in = mean_squared_error(y_train, rf.predict(X_train))
+    #mse = mean_squared_error(y_test, y_pred)
+    #mse_in = mean_squared_error(y_train, rf.predict(X_train))
 
-    df_test = pd.DataFrame({'meas': y_test, 'pred': gm_cv.predict(X_test), 'split': 'out of sample'})
-    df_train = pd.DataFrame({'meas': y_train, 'pred': gm_cv.predict(X_train), 'split': 'in sample'})
+    df_test = pd.DataFrame({'meas': y_test, 'pred': rf.predict(X_test), 'split': 'out of sample'})
+    df_train = pd.DataFrame({'meas': y_train, 'pred': rf.predict(X_train), 'split': 'in sample'})
     df = pd.concat([df_test, df_train])
 
     fig = px.scatter(df, x = "meas", y = "pred", color = "split", 

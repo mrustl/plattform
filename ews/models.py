@@ -62,6 +62,8 @@ class PredictionModel(models.Model):
     #bathing_spot = models.ForeignKey(BathingSpot, on_delete=models.CASCADE, related_name="models")
     site = models.ManyToManyField(Site, related_name = "models", null = True, blank = True)
     area = models.ManyToManyField(SelectArea, related_name = "models", null = True, blank = True)
+    fit = models.BinaryField(null=True)
+    predict = models.BooleanField(default= False)
     def __str__(self):
         return f"{self.name}"
 
