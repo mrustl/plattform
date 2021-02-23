@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import BathingSpotForm, SiteForm, FeatureDataForm, PredictionModelForm, SelectAreaForm
 from .models import BathingSpot, Site, FeatureData, FeatureType, User, PredictionModel, SelectArea
 from django.urls import reverse
@@ -364,7 +364,15 @@ def model_fit(request, model_id):
     feature_importance = plot(fig, output_type = "div")
     bathingspot= model.site.all()[0]    
 
-    return render(request, 'ews/model_fit.html', {'bathingspot':bathingspot, "entries": Site.objects.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
+    return render(request, 'ews/model_fit.html', {'bathingspot':bathingspot, "entries": Site.objects.all(), "model": model, 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
+
+
+
+def prediction_switch(reuqest, model_id):
+    model = PredictionModel.objects.get(id = model_id)
+    model.predict = not model.predict
+    model.save()
+    return JsonResponse({"status": str(model.predict)}, status=201)
 
 #import pickle
 #from ml.models import MlModels

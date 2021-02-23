@@ -1,18 +1,26 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    console.log("Hallo")
+    
+    toggler = document.querySelector('#customSwitches')
+   
+    if(toggler.dataset.predict === "True"){
+        toggler.checked = true
+      } else {
+        toggler.checked = false
+      }
   // Use buttons to toggle between views
   //document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
-  document.querySelector('#customSwitches').addEventListener('change', () => toggle_prediction())
+    toggler.addEventListener('change', () => toggle_prediction(toggler.dataset.post))
   
 });
 
-function toggle_prediction() {
 
-    console.log("Yippie")
-  
-  }
 
+function toggle_prediction(model_id) {
+    fetch(`/prediction_switch/${model_id}`)
+    .then(response => console.log(response.json()))
+          
+}
   /*
 function load_mailbox(mailbox) {
 
