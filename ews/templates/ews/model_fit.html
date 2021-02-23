@@ -1,6 +1,7 @@
 {% extends "ews/base.html" %}
 {% load leaflet_tags %}
  {% load geojson_tags %}
+ {% load static %}
 
 {% block head %}
 
@@ -48,6 +49,7 @@
 {% endblock %}
 
 {% block body %}
+          
 <div class="container-fluid" style="padding: 5%">
  <h4 class="media-heading">{{bathingspot|title}}</h4>
  <div class="custom-control custom-switch">
@@ -163,6 +165,10 @@
             }
     
           </script>
+          <script type="text/javascript" src="{% static 'ews/js/toggle.js' %}">
+            
+        </script>
+
           <div class="mt-5">
               <p class="mb-4" style="font-size: 14;"></p>
               {% leaflet_map "spots" callback="window.map_init" %}
