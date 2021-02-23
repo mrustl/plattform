@@ -177,6 +177,7 @@ def site_detail(request, site_id):
         fig = px.bar(df, "date", "value",  opacity = 1)
         fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
                   marker_line_width=1.5, opacity=0.6)
+        
         #fig.update_layout(title_text=df.site[0].replace("_", " "))
         fig = plot(fig, output_type = "div")
         
@@ -233,9 +234,11 @@ def register(request):
 import json
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error as MSE
+from sklearn.metrics import mean_squared_error
 from shapely.geometry import shape, Point
 import statsmodels
+from sklearn.model_selection import GridSearchCV, train_test_split
+
 
 def model_fit(request, model_id):
     model = PredictionModel.objects.get(id = model_id)
@@ -268,17 +271,50 @@ def model_fit(request, model_id):
     res = res[res.index.month.isin([ 6, 7, 8, 9])].reset_index()
 
     FIB = read_frame(FeatureData.objects.filter(site = model.site.all()[0]))
+    FIB["date"] = FIB.date.round("D")
     d = FIB.merge(res, on= "date")
     D = d.dropna()
     y = np.log10(D["value"])
     X = D.drop(["date", "value", "id", "site"], axis = 1)
-    rf = RandomForestRegressor()
-    rf.fit(X, y)
-    y_pred= rf.predict(X)
-    mean_squard_error = MSE(y, y_pred)
-    df = pd.DataFrame({'meas': y, 'pred':y_pred})
+    
+    
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    grid = {'n_estimators':[100], 'max_depth': np.linspace(10, 15, 6), 'max_features': [4,6,8]} 
+    
 
-    fig = px.scatter(df, x = "meas", y = "pred", trendline="ols")
+    # Instantiate the ElasticNet regressor: elastic_net
+    rf = RandomForestRegressor()
+
+    # Setup the GridSearchCV object: gm_cv
+    gm_cv = GridSearchCV(rf, param_grid=grid, cv = 5)
+
+    # Fit it to the training data
+
+    gm_cv.fit(X_train, y_train)
+    rf = RandomForestRegressor(n_estimators = gm_cv.best_params_["n_estimators"],
+                          max_depth = gm_cv.best_params_["max_depth"],
+                          max_features = gm_cv.best_params_["max_features"])
+    rf.fit(X_train, y_train)
+
+
+    # Predict on the test set and compute metrics
+    #y_pred1 = gm_cv.predict(X_test)
+    y_pred = rf.predict(X_test)
+
+
+    r2 = rf.score(X_test, y_test)
+    r2_in = rf.score(X_train, y_train)
+
+    mse = mean_squared_error(y_test, y_pred)
+    mse_in = mean_squared_error(y_train, rf.predict(X_train))
+
+    df_test = pd.DataFrame({'meas': y_test, 'pred': gm_cv.predict(X_test), 'split': 'out of sample'})
+    df_train = pd.DataFrame({'meas': y_train, 'pred': gm_cv.predict(X_train), 'split': 'in sample'})
+    df = pd.concat([df_test, df_train])
+
+    fig = px.scatter(df, x = "meas", y = "pred", color = "split", 
+                 color_discrete_sequence=['#212c52','#75c3ff'])
 
     fig.update_layout(
         font_family="Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -286,14 +322,21 @@ def model_fit(request, model_id):
         title = {'text':'Model fit of Random Forest model'},
         xaxis_title = "measured data (sample)",
         yaxis_title = "fitted values (in sample fit)",
-        #markercolor = "#212c52"
-        
+        #markersize= 12,
         )
-
-    fig.update_traces(marker_color='#75c3ff', marker_line_color='#212c52',
-                        marker_line_width=1.5, opacity=1)
+    fig.update_layout(legend=dict(
+    yanchor="top",
+    title=None,
+    y=0.99,
+    xanchor="left",
+    x=0.01
+    ))
+    fig.update_traces(marker_size = 8)#['#75c3ff', "red"],#, marker_line_color='#212c52',
+ #                 marker_line_width=1.5, opacity=1)
 
     model_fit = plot(fig, output_type = "div")
+
+
 
     importances = pd.Series(data=rf.feature_importances_,
                         index= X.columns)
@@ -315,5 +358,38 @@ def model_fit(request, model_id):
                         marker_line_width=1.5, opacity=1)
 
     feature_importance = plot(fig, output_type = "div")
+    bathingspot= model.site.all()[0]    
 
-    return render(request, 'ews/model_fit.html', {'model':model, "entries": Site.objects.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
+    return render(request, 'ews/model_fit.html', {'bathingspot':bathingspot, "entries": Site.objects.all(), 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
+
+#import pickle
+#from ml.models import MlModels
+#from rest_framework.response import Response
+
+
+# using the model
+#@api_view(['GET'])
+#def predict(request):
+#    if request.method == "GET":
+ #       X = [[0.12, 22, 33, 100]]
+ #       raw_model = MlModel.objects.all()[0]
+ #       model = pickle.loads(raw_model.model)
+ #       print(model.predict(X))
+ #       return Response(status=status.HTTP_200_OK)
+
+#from sklearn import svm
+#import pickle
+#from ml.models import MlModels
+#from rest_framework.response import Response
+
+# Saving the model
+#@api_view(['GET'])
+#def save(request):
+#  if request.method == 'GET':
+#    X = [[0.12, 22, 33, 100], [0.19, 19, 99, 33], [0.5, 50, 150, 0]]
+#    y = [1, 0, 1]
+#    model = svm()
+#    model.fit(X=X, y=y)
+#    data = pickle.dumps(model)
+#    MlModels.objects.create(model=data)
+#    return Response(status=status.HTTP_200_OK)

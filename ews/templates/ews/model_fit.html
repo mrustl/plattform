@@ -49,7 +49,12 @@
 
 {% block body %}
 <div class="container-fluid" style="padding: 5%">
- <h4 class="media-heading">{{model.name|title}}</h4>
+ <h4 class="media-heading">{{bathingspot|title}}</h4>
+ <div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="customSwitches">
+    <label class="custom-control-label" for="customSwitches">Use this model for making predictions</label>
+  </div>
+
   <div class="row">
     <div class="col-sm-6">
         
