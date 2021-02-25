@@ -170,7 +170,7 @@ def file_upload(request, site_id):
     return render(request, 'ews/import.html', {"site_id":site_id})
 
 
-
+@login_required
 def site_detail(request, site_id):
         df = read_frame(FeatureData.objects.filter(site_id=site_id))
         entry = Site.objects.get(id = site_id)
@@ -183,7 +183,7 @@ def site_detail(request, site_id):
         
         return render(request, "ews/site_detail.html", {"fig":fig, "entry":entry})#, "data":df.to_html()})
     
-
+@login_required
 def selectarea_create(request):
     if request.method == "POST":
         form = SelectAreaForm(request.POST)
@@ -367,7 +367,7 @@ def model_fit(request, model_id):
     return render(request, 'ews/model_fit.html', {'bathingspot':bathingspot, "entries": Site.objects.all(), "model": model, 'areas': model.area.all(),'model_fit':model_fit, 'feature_importance':feature_importance})
 
 
-
+@login_required
 def prediction_switch(reuqest, model_id):
     model = PredictionModel.objects.get(id = model_id)
     model.predict = not model.predict

@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     toggler = document.querySelector('#customSwitches')
-   
+    document.querySelector('#customSwitches').dataset.predict
     if(toggler.dataset.predict === "True"){
         toggler.checked = true
       } else {
-        toggler.checked = false
+          toggler.checked = false
       }
   // Use buttons to toggle between views
   //document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
