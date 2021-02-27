@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from .models import BathingSpot, Site, FeatureData, FeatureType, PredictionModel, SelectArea
+from .models import BathingSpot, Site, FeatureData, FeatureType, PredictionModel, SelectArea, Variable
 from import_export.admin import ImportExportModelAdmin
 from leaflet.admin import LeafletGeoAdmin
 from django.contrib.gis import admin
@@ -8,7 +8,7 @@ from leaflet.admin import LeafletGeoAdminMixin
 
 @admin.register(FeatureData)
 class featuredataAdmin(ImportExportModelAdmin):
-    list_display=("id", "date", "value", "site")
+    list_display=("id", "date", "value", "site", "variable")
 
    
 
@@ -37,6 +37,7 @@ class SelectAreaAdmin(LeafletGeoAdmin):
 admin.site.register(BathingSpot,BathingSpotAdmin)
 admin.site.register(Site, SiteAdmin)
 
+admin.site.register(Variable)
 admin.site.register(SelectArea, SelectAreaAdmin)
 admin.site.register(PredictionModel)
 admin.site.register(FeatureType, FeatureTypeAdmin)

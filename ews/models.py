@@ -42,7 +42,8 @@ class Variable(models.Model):
     name = models.CharField(max_length=255, null = True)
     abbreviation = models.CharField(max_length=6, null = True)
     description = models.CharField(max_length=255, null = True)
-    
+    def __str__(self):
+        return f"{self.name}"
 
 
 class FeatureData(models.Model):

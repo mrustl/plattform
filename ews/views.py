@@ -258,7 +258,7 @@ def model_fit(request, model_id):
     lagvars = []
 
     for i in range(len(areavars)):
-        ft = areavars[i].area.unique()
+        ft = areavars[i].area.unique()+ " " +areavars[i].feature_type.unique()
         d = areavars[i].pivot(columns = 'site', values = 'value')
         if len(d.columns) > 1:
             d = pd.DataFrame(d.mean(axis = 1, skipna = True))
@@ -268,7 +268,9 @@ def model_fit(request, model_id):
             lagvars.append(df)
             
     res = pd.concat(lagvars, axis = 1)
-    res = res[res.index.month.isin([ 6, 7, 8, 9])].reset_index()
+    res = res[res.index.month.isin([5, 6, 7, 8, 9])].reset_index()
+    rain_cols = [col for col in res.columns if 'Rainfall' in col]
+    res[rain_cols] = res[rain_cols].add(1).apply(np.log)
 
     FIB = read_frame(FeatureData.objects.filter(site = model.site.all()[0]))
     FIB["date"] = FIB.date.round("D")
@@ -279,11 +281,11 @@ def model_fit(request, model_id):
     
     
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=4)
 
     if model.fit == None:
 
-        grid = {'n_estimators':[100], 'max_depth': np.linspace(10, 15, 6), 'max_features': [4,6,8]} 
+        grid = {'n_estimators':[1000], 'max_depth': np.linspace(1, 6, 6), 'max_features': [4,6,8],  'min_samples_leaf':[1]} 
     
         # Instantiate the Random regressor: elastic_net
         rf = RandomForestRegressor()
@@ -296,7 +298,7 @@ def model_fit(request, model_id):
         gm_cv.fit(X_train, y_train)
         rf = RandomForestRegressor(n_estimators = gm_cv.best_params_["n_estimators"],
                             max_depth = gm_cv.best_params_["max_depth"],
-                            max_features = gm_cv.best_params_["max_features"])
+                            max_features = gm_cv.best_params_["max_features"],min_samples_leaf=1)
         rf.fit(X_train, y_train)
         model.fit = pickle.dumps(rf)
         model.save()
