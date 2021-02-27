@@ -37,10 +37,19 @@ class Site(models.Model):
     def SiteType(self):
         return '{}'.format(self.feature_type)
 #"{% url 'ews:site_detail' entry.id  %}"
+
+class Variable(models.Model):
+    name = models.CharField(max_length=255, null = True)
+    abbreviation = models.CharField(max_length=6, null = True)
+    description = models.CharField(max_length=255, null = True)
+    
+
+
 class FeatureData(models.Model):
     date = models.DateTimeField()
     value = models.DecimalField(max_digits=1000, decimal_places=3)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site")
+    variable = models.ForeignKey(Variable, on_delete=models.CASCADE, null=True, related_name="variable")
     class Meta:
         unique_together = ('date', 'site','value',)
     

@@ -272,7 +272,7 @@ def model_fit(request, model_id):
 
     FIB = read_frame(FeatureData.objects.filter(site = model.site.all()[0]))
     FIB["date"] = FIB.date.round("D")
-    d = FIB.merge(res, on= "date")
+    d = FIB.merge(res, on= "date").drop("variable", axis = 1)
     D = d.dropna()
     y = np.log10(D["value"])
     X = D.drop(["date", "value", "id", "site"], axis = 1)
