@@ -131,3 +131,4 @@ dmypy.json
 #notebooks
 test_keyrock-api.ipynb
 test_keyrock-api.ipynb
+.Rproj.user
