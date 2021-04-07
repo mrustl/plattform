@@ -6,7 +6,7 @@
 install.packages("remotes", repos = "https://cloud.r-project.org")
 remotes::install_github("kwb-r/kwb.python")
 
-## Define dependencies (from "tools/requirements.txt")
+## Define dependencies (from "requirements.txt")
 pkgs <- list(conda = c("django",
                        "django-crispy-forms",
                        "django-import-export",
