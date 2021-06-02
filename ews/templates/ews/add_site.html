@@ -6,18 +6,18 @@
   <div class="row">
     <div class="col-sm-8">
     <h4>Create new predictor variable</h4>
-    <form method = "post", action="{% url 'ews:add_station'%}">
+    <form method = "post", action="{% url 'ews:add_site'%}">
         {% csrf_token %}
         {{form.name|as_crispy_field}}
         {{form.feature_type|as_crispy_field}}
-        {{form.bathing_spot|as_crispy_field}}
+        
         <input type="submit" value="Submit">
     </form>
     </div>
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_station'%}"> Create new predictor</a>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
         <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
 
     </div>

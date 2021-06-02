@@ -10,7 +10,7 @@
     <h4 class="mb-6">Upload your data as csv file</h4>
 
   
- <form  method="post" enctype="multipart/form-data" action = "{%url 'ews:file_upload' station_id%}">
+ <form  method="post" enctype="multipart/form-data" action = "{%url 'ews:file_upload' site_id%}">
     {% csrf_token %}
    <div class="custom-file mt-4" id="customFile" lang="en">
         <input type="file" class="custom-file-input" id="exampleInputFile" type="file" name="myfile" aria-describedby="fileHelp">
@@ -30,7 +30,7 @@
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_station'%}"> Create new predictor</a>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
         <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
 
     </div>

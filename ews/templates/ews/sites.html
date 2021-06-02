@@ -1,0 +1,167 @@
+{% extends "ews/base.html" %}
+{% load leaflet_tags %}
+ {% load geojson_tags %}
+
+{% block head %}
+
+ {% leaflet_css %}
+ 
+  {% leaflet_js %}
+  <style>
+
+    .leaflet-container {  /* all maps */
+        width:  100%;
+        height: 400px;
+    }
+
+    #specialbigmap {
+        height: 800px;
+    }
+
+    /* Resize the "display_raw" textbox */
+    .django-leaflet-raw-textarea {
+        width: 100%;
+    }
+    .legend {
+    line-height: 18px;
+    color: #555;
+    
+}
+.legend i {
+    width: 15px;
+    height: 15px;
+    float: left;
+    margin-right: 10px;
+    opacity: 0.7;
+}
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: 2%">
+ <h4>Overview of available measurement sites</h4>
+  <p>Click on the markers to see details and to add data</p>
+  <div class="row">
+    <div class="col-sm-8">
+      <div>
+      <script type="text/javascript">
+        var collection = {{ entries|geojsonfeature:"popupContent,SiteType"|safe }};
+        var areas = {{ areas|geojsonfeature:"popupContent,SiteType"|safe }};
+        function onEachFeature(feature, layer) {
+           if (feature.properties && feature.properties.popupContent) {
+            layer.bindPopup(feature.properties.popupContent);
+             }
+            }
+        
+            var geojsonMarkerOptions = {
+                          radius: 8,
+                          fillColor: "rgb(0, 86, 110)",
+                          color: "grey",
+                          weight: 1,
+                          opacity: 1,
+                          fillOpacity: 0.8
+                      };
+
+    function getColor(d) {
+            return d === 'Network' ? 'rgb(255, 130, 104)'  :
+                  d === 'Rainfall' ? 'rgb(117, 195, 255)'  :
+                  d === 'WWTP' ? 'rgb(178, 83, 64)'  :
+                  d === 'Riverflow' ? 'rgb(64, 129, 178)'  :
+                  d === 'BathingSpot' ? '#3185ff' :
+                  "red";
+                 
+}
+                     
+        
+
+        function map_init(map, options) {
+            var layerControl = L.control.layers().addTo(map);
+          var sites = L.geoJson(collection,{onEachFeature: onEachFeature, 
+            pointToLayer: function (feature, latlng) {
+             return L.circleMarker(latlng, geojsonMarkerOptions);
+            },
+            style: function(feature) {
+         switch (feature.properties.SiteType) {
+            case 'Network': return {fillColor: 'rgb(255, 130, 104)', radius: 4};
+            case 'WWTP':   return {fillColor: 'rgb(178, 83, 64)', radius: 12};
+            case 'Riverflow':   return {fillColor: 'rgb(64, 129, 178)' , radius: 10};
+            case 'BathingSpot':   return {fillColor: '#3185ff', radius: 10};
+            case 'Rainfall':   return {fillColor: 'rgb(117, 195, 255)' };
+            
+        }
+    }
+           })
+        
+           layerControl.addOverlay(sites, "Sites");
+       
+        
+
+    var area_layer = L.geoJson(areas, {style:function(feature) {
+         switch (feature.properties.SiteType) {
+            case 'Network': return {fillColor: 'rgb(255, 130, 104)', color: 'rgb(255, 130, 104)'};
+            case 'WWTP':   return {fillColor: 'rgb(178, 83, 64)'};
+            case 'Riverflow':   return {fillColor: 'rgb(64, 129, 178)', color:'rgb(64, 129, 178)' };
+            case 'BathingSpot':   return {fillColor: '#3185ff'};
+            case 'Rainfall':   return {fillColor: 'rgb(117, 195, 255)' , color: 'rgb(117, 195, 255)'};
+            
+        }
+    }
+           })
+          // layerControl.addOverlay(area_layer, "SelectAreas");
+
+           var legend = L.control({position: 'bottomright'});
+
+              legend.onAdd = function (map) {
+
+                  var div = L.DomUtil.create('div', 'info legend'),
+                      grades = ['Network', 'Rainfall', 'WWTP', 'BathingSpot', 'Riverflow'],
+                      labels = [];
+
+                  // loop through our density intervals and generate a label with a colored square for each interval
+                  for (var i = 0; i < grades.length; i++) {
+                      div.innerHTML +=
+                          '<i style="background:' + getColor(grades[i]) + '"></i> ' +
+                          '<span>'+grades[i] + '</span>' + '<br>' //+ (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                  }
+
+
+                  return div;
+              };
+
+          legend.addTo(map);
+
+
+
+        }
+
+      </script>
+
+      {% leaflet_map "spots" callback="window.map_init" %}
+
+
+      </div>
+
+    </div>
+  
+    <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
+     <h4 class= "mb-3">Options</h4>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
+        <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
+
+    </div>
+{% endblock %}
+
+
+
+
+            

@@ -1,0 +1,107 @@
+{% extends "ews/base.html" %}
+{% load leaflet_tags %}
+{% load geojson_tags %}
+{% load crispy_forms_tags %}
+{% block head %}
+
+   {% leaflet_js plugins="forms" %}
+   {% leaflet_css plugins="forms" %}
+   <style>
+    .leaflet-container {  /* all maps */
+           width:  100%;
+           height: 350px;
+       }
+   
+       #specialbigmap {
+           height: 600px;
+       }
+   
+       /* Resize the "display_raw" textbox */
+       .django-leaflet-raw-textarea {
+           width: 100%;
+       }
+       .legend {
+       line-height: 18px;
+       color: #555;
+       
+   }
+   .legend i {
+       width: 15px;
+       height: 15px;
+       float: left;
+       margin-right: 10px;
+       opacity: 0.7;
+   }
+   .info {
+       padding: 6px 8px;
+       font: 14px/16px Arial, Helvetica, sans-serif;
+       background: white;
+       background: rgba(255,255,255,0.8);
+       box-shadow: 0 0 15px rgba(0,0,0,0.2);
+       border-radius: 5px;
+   }
+   
+    
+   
+   </style>
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: 2%">
+    <div class="row">
+       <div class="col-sm-8">
+           <div>
+            <h4>Variable selection map</h4>
+               <p>Use the map to define relevant catchments for predictor variables</p>
+                  
+                <form action= "{% url 'ews:selectarea_create' %}" method = "post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit"/>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
+        <h4 class= "mb-3">Options</h4>
+            <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
+            <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
+            <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
+        </div>
+    </div>
+</div>
+
+        <script>
+    window.addEventListener("map:init", function (e) {
+        var detail = e.detail;
+        var collection = {{ entries|geojsonfeature:"SiteType"|safe }};
+        
+        var geojsonMarkerOptions = {
+                          radius: 8,
+                          fillColor: "rgb(0, 86, 110)",
+                          color: "grey",
+                          weight: 1,
+                          opacity: 1,
+                          fillOpacity: 0.8
+                      };
+
+        
+        L.geoJson(collection,{ pointToLayer: function (feature, latlng) {
+             return L.circleMarker(latlng, geojsonMarkerOptions);
+            },
+            style: function(feature) {
+         switch (feature.properties.SiteType) {
+            case 'Network': return {fillColor: 'rgb(255, 130, 104)', radius: 4};
+            case 'WWTP':   return {fillColor: 'rgb(178, 83, 64)', radius: 12};
+            case 'Riverflow':   return {fillColor: 'rgb(64, 129, 178)' , radius: 10};
+            case 'BathingSpot':   return {fillColor: '#3185ff', radius: 10};
+            case 'Rainfall':   return {fillColor: 'rgb(117, 195, 255)' };
+            
+        }
+    }
+           }).addTo(detail.map);
+        
+    }, false);
+</script>
+   
+{% endblock %}

@@ -19,16 +19,16 @@
     
     <h5> Prediction models</h5>
 
-    {%for station in stations%}
+    {%for site in sites%}
     <ul>
         
-            <h5>{{station.name}}</h5> 
-            <h5>{{station.id}}</h5> 
+            <h5>{{site.name}}</h5> 
+            <h5>{{site.id}}</h5> 
         
         <p>
-            Type of predictor variable: {{station.feature_type}} 
+            Type of predictor variable: {{site.feature_type}} 
             <button class= "btn-danger btn-sm">Delete</button>
-            <form action="{% url 'ews:file_upload' station.id%}">
+            <form action="{% url 'ews:file_upload' site.id%}">
             <button class= "btn-primary btn-sm">Add data</button>
             </form>
         </p> 
@@ -37,7 +37,7 @@
         {% empty %}
         <p>There are currently no existing prediction models. Create some predictors and start modeling!</p>
 
-        <a href="{% url 'ews:add_station' %}"></a>
+        <a href="{% url 'ews:add_site' %}"></a>
         
         {% endfor %}
     </ul>
@@ -49,7 +49,7 @@
     <div class="col-sm-3 offset-sm-1"> <!--style= "background-color: #007c9f; color: white">--> 
      <h4 class= "mb-3">Options</h4>
         <a class = "btn btn-primary mt-3 btn-block" href="{% url "ews:spot_create" %}"> Create new bathing spot</a>
-        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_station'%}"> Create new predictor</a>
+        <a class = "btn btn-primary mt-3 btn-block" href="{% url 'ews:add_site'%}"> Create new predictor</a>
         <a class = "btn btn-primary mt-3 btn-block" href = "{% url "ews:model_config" %}"> Configure prediction model </a>
 
     </div>
