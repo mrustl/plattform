@@ -23,7 +23,7 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
         with:
-          fetch-depth: 1
+          ref: ${{ github.ref }}
       - name: Scan Django settings for security issues
         id: check
         uses: mrustl/django-security-check@master
