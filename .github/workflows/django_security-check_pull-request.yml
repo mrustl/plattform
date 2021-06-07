@@ -18,7 +18,14 @@ jobs:
         ref: ${{ github.ref }}
     - name: Install System Dependencies
       run: |
-        sudo apt-get install binutils libproj-dev gdal-bin libgdal-dev
+        sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
+        sudo apt-get update
+        sudo apt-get install build-essential
+        sudo apt-get install gdal-bin
+        sudo apt-get install libgdal-dev
+        sudo apt-get install python3-gdal
+        export CPLUS_INCLUDE_PATH=/usr/include/gdal
+        export C_INCLUDE_PATH=/usr/include/gdal
     - name: Scan Django settings for security issues
       id: check
       uses: mrustl/django-security-check@master
