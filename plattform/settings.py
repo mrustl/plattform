@@ -68,7 +68,7 @@ LEAFLET_CONFIG = {
 'FORCE_IMAGE_PATH': True
 }
 
-GDAL_LIBRARY_PATH = os.path.join(r'C:\Users\wolfg\miniconda3\envs', r'DWC\Library\bin\gdal302.dll') 
+#GDAL_LIBRARY_PATH = os.path.join(r'C:\Users\wolfg\miniconda3\envs', r'DWC\Library\bin\gdal302.dll') 
 
 TEMPLATES = [
     {
