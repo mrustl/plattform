@@ -21,7 +21,7 @@ jobs:
         uses: mrustl/django-security-check@master
       - id: results
         run: |
-          OUTPUT=$(cat ${{ github.workspace }}/${{ env.APP_PATH}}output.txt)
+          OUTPUT=$(cat ${{ github.workspace }}/${{ env.APP_PATH  }}output.txt)
           FORMATTED=${OUTPUT//$'\n'/%0A}
           echo ::set-output name=file::**Django Security Check identified issues:** %0A$FORMATTED
       - name: Comment with output
