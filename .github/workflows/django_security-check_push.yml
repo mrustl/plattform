@@ -34,6 +34,9 @@ jobs:
         sudo apt-get install python3-gdal
         export CPLUS_INCLUDE_PATH=/usr/include/gdal
         export C_INCLUDE_PATH=/usr/include/gdal
+      with:
+       python-version: (${{ matrix.config.python-version }})
+       django-version: 3.1
     - name: Scan Django settings for security issues
       id: check
       uses: mrustl/django-security-check@master
