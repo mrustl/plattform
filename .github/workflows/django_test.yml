@@ -33,7 +33,9 @@ jobs:
       with:
         ref: ${{ github.ref }}
     - name: Install System Dependencies
-      run: sudo apt-get install python3-testresources
+      run: |
+        sudo apt-get install python3-testresources
+        sudo apt-get install binutils libproj-dev gdal-bin
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
