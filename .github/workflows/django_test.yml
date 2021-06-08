@@ -18,15 +18,15 @@ env:
 
 jobs:
   test:
-    runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }}  (python v${{ matrix.config.python-version }}  django v${{ matrix.config.django-version}})
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}  (python v${{ matrix.python-version }}  django v${{ matrix.django-version}})
     strategy:
       # By default, GitHub will maximize the number of jobs run in parallel
       # depending on the available runners on GitHub-hosted virtual machines.
       # max-parallel: 8
       fail-fast: false
       matrix:
-        os: ubuntu-latest
+        os: "ubuntu-latest"
         python-version:
           - "2.7"
           - "3.6"
@@ -126,6 +126,6 @@ jobs:
         run: |
           coverage run --omit=*/tests/* ${APP_PATH}manage.py test
       - name: Coveralls
-        if: matrix.config.os  == 'ubuntu-latest' && matrix.python-version == '3.7' && matrix.django-version == '3.0'
+        if: matrix.os  == 'ubuntu-latest' && matrix.python-version == '3.7' && matrix.django-version == '3.0'
         run: coveralls --service=github
 
