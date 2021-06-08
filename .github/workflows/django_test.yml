@@ -126,7 +126,7 @@ jobs:
           sudo pip install coverage coveralls
       - name: Run Security Check
         run: |
-          python ${APP_PATH}manage.py check --deploy --fail-level ${FAIL} &> ${output}
+          python manage.py check --deploy --fail-level ${FAIL} &> ${output}
           echo -e "\n--------- Django Security Check results ---------"
           cat ${output}
       - name: Upload Security Check Results
