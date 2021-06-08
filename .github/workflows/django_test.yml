@@ -26,7 +26,7 @@ jobs:
       # max-parallel: 8
       fail-fast: false
       matrix:
-        os: "ubuntu-latest"
+        os: [ubuntu-20.04]
         python-version:
           - "2.7"
           - "3.6"
@@ -126,6 +126,6 @@ jobs:
         run: |
           coverage run --omit=*/tests/* ${APP_PATH}manage.py test
       - name: Coveralls
-        if: matrix.os  == 'ubuntu-latest' && matrix.python-version == '3.7' && matrix.django-version == '3.0'
+        if: matrix.os  == 'ubuntu-20.04' && matrix.python-version == '3.7' && matrix.django-version == '3.0'
         run: coveralls --service=github
 
