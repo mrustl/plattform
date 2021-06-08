@@ -15,6 +15,7 @@ on:
 env:
   APP_PATH: ./
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  output: output.txt
 
 jobs:
   test:
@@ -122,10 +123,20 @@ jobs:
         run: |
           sudo pip install -r ${APP_PATH}requirements.txt
           sudo pip install coverage coveralls
+      - name: Run Security Check
+        run: |
+          python ${APP_PATH}manage.py check --deploy --fail-level ${FAIL} &> ${output}
+          echo -e "\n--------- Django Security Check results ---------"
+          cat ${output}
+      - name: Upload Security Check Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: security-check-output
+          path: ${output}
       - name: Run Tests
         run: |
           coverage run --omit=*/tests/* ${APP_PATH}manage.py test
       - name: Coveralls
-        if: matrix.os  == 'ubuntu-20.04' && matrix.python-version == '3.7' && matrix.django-version == '3.0'
+        if: matrix.os  == 'ubuntu-20.04' && matrix.python-version == '3.9' && matrix.django-version == '3.2'
         run: coveralls --service=github
 
