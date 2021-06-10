@@ -99,7 +99,6 @@ jobs:
           sudo apt-get install gdal-bin
           sudo apt-get install libgdal-dev
           sudo apt-get install python3-gdal
-          sudo apt-get install pydeps
           export CPLUS_INCLUDE_PATH=/usr/include/gdal
           export C_INCLUDE_PATH=/usr/include/gdal
       - name: Check out current branch
@@ -125,6 +124,7 @@ jobs:
         run: |
           sudo pip install -r ${APP_PATH}requirements.txt
           sudo pip install coverage coveralls
+          sudo pip install pydeps
       - name: Run Security Check
         run: |
           python manage.py check --deploy --fail-level ${FAIL} &> "output.txt"
