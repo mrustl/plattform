@@ -99,6 +99,8 @@ jobs:
           sudo apt-get install gdal-bin
           sudo apt-get install libgdal-dev
           sudo apt-get install python3-gdal
+          sudo apt-get install coverage coveralls
+          sudp apt-get install pydeps
           export CPLUS_INCLUDE_PATH=/usr/include/gdal
           export C_INCLUDE_PATH=/usr/include/gdal
       - name: Check out current branch
@@ -129,11 +131,21 @@ jobs:
           python manage.py check --deploy --fail-level ${FAIL} &> "output.txt"
           echo -e "\n--------- Django Security Check results ---------"
           cat "output.txt"
+      - name: Create Dependency Graph
+        run: |
+          python pydeps  ${APP_PATH}/ --max-bacon=4 --cluster -o dependencies -T svg
       - name: Upload Security Check Results
         uses: actions/upload-artifact@v2
         with:
           name: security-check-output
-          path: "output.txt"
+          path: |
+            "output.txt"
+      - name: Upload Dependency Graph
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependency-graph-output
+          path: |
+            "dependencies.svg"
       - name: Run Tests
         run: |
           coverage run --omit=*/tests/* ${APP_PATH}manage.py test
