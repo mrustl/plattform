@@ -13,8 +13,10 @@ on:
       - dev
 
 env:
-  APP_PATH: ./
+  INIT_PATH: plattform/
   FAIL_LEVEL: WARNING
+  MANAGE_PATH: manage.py
+  REQS_PATH: requirements.txt
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #  output: output.txt
 
@@ -122,17 +124,17 @@ jobs:
           echo "Django: `django-admin --version`"
       - name: Install Python/Django Dependencies
         run: |
-          sudo pip install -r ${APP_PATH}requirements.txt
+          sudo pip install -r ${REQS_PATH}
           sudo pip install coverage coveralls
           sudo pip install pydeps
       - name: Run Security Check
         run: |
-          python manage.py check --deploy --fail-level ${FAIL} &> "output.txt"
+          python ${MANAGE_PATH} check --deploy --fail-level ${FAIL} &> "output.txt"
           echo -e "\n--------- Django Security Check results ---------"
           cat "output.txt"
       - name: Create Dependency Graph
         run: |
-          python pydeps  ${APP_PATH}/ --max-bacon=4 --cluster -o dependencies -T svg
+          python pydeps  ${INIT_PATH} --max-bacon=4 --cluster -o dependencies -T svg
       - name: Upload Security Check Results
         uses: actions/upload-artifact@v2
         with:
@@ -147,7 +149,7 @@ jobs:
             "dependencies.svg"
       - name: Run Tests
         run: |
-          coverage run --omit=*/tests/* ${APP_PATH}manage.py test
+          coverage run --omit=*/tests/* ${MANAGE_PATH} test
       - name: Coveralls
         if: matrix.os  == 'ubuntu-20.04' && matrix.python-version == '3.9' && matrix.django-version == '3.2'
         run: coveralls --service=github
