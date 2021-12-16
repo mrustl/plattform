@@ -41,4 +41,3 @@ kwb.python::conda_export(condaenv = env_name, export_dir = ".")
 kwb.python::run_django(condaenv = env_name,
                        cmd = "runserver",
                        path_manage.py = "manage.py")
-
